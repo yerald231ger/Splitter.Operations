@@ -14,7 +14,6 @@ public abstract class Repository<TEntity, TKey>(DbContext dbContext) : IReposito
         result.State = EntityState.Detached;
         await Context.SaveChangesAsync();
         return result.Entity;
-
     }
 
     public async Task<int> DeleteAsync(TEntity entity)

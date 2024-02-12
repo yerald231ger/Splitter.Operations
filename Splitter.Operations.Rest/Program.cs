@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using Microsoft.EntityFrameworkCore;
 using Splitter.Operations.Rest;
 
@@ -7,6 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(builder => {
+    builder.AddPolicy("SplitterFront", policy =>
+    {
+        policy.WithOrigins("http://localhost:4321")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+
+        policy.WithOrigins("https://spliter-eight.vercel.app")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+
+});
 
 builder.Services.AddDbContext<SplitterDbContext>(options =>
 {
@@ -24,6 +38,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("SplitterFront");
 
 var summaries = new[]
 {
@@ -55,6 +71,12 @@ app.MapPost("/api/tableevent", (EventTableDto dto, SplitterDbContext splitterDbC
 
     splitterDbContext.EventTables.Add(eventtable);
     splitterDbContext.SaveChanges();
+});
+
+app.MapGet("/api/tableevent", (SplitterDbContext splitterDbContext) =>
+{
+    var eventtables = splitterDbContext.EventTables.ToList();
+    return eventtables;
 });
 
 app.Run();

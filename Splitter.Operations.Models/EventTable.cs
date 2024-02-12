@@ -8,23 +8,14 @@ public class EventTable
     public required DateTime FinishedAt { get; set; }
     public  OrderTable? OrderTable { get; set; }
 
-    public static EventTable Create(string name)
-    {
-        if(string.IsNullOrWhiteSpace(name))
-        {
-            throw new ArgumentException($"cannot be null or empty", nameof(name));
-        }
+    public static EventTable Create(string name) => string.IsNullOrWhiteSpace(name)
+            ? throw new ArgumentException($"cannot be null or empty", nameof(name))
+            : new EventTable
+            {
+                Name = name,
+                CreatedAt = DateTime.Now,
+                FinishedAt = DateTime.MaxValue
+            };
 
-        return new EventTable
-        {
-            Name = name,
-            CreatedAt = DateTime.Now,
-            FinishedAt = DateTime.MaxValue
-        };
-    }    
-
-    public bool HasOrderTable()
-    {
-        return OrderTable != null;
-    }
+    public bool HasOrderTable() => OrderTable != null;
 }

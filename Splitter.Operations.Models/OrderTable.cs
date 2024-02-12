@@ -13,27 +13,15 @@ public class OrderTable
     public DateTime PaidAt { get; set; }
     public OrderTableStatus Status { get; set; }
 
-    public static OrderTable Create()
-    {
-        return new OrderTable();
-    }
+    public static OrderTable Create() => new();
 
-    public bool IsClosed()
-    {
-        return Status != OrderTableStatus.Closed;
-    }
+    public bool IsClosed() => Status != OrderTableStatus.Closed;
 
-    public bool IsPaid()
-    {
-        return Status != OrderTableStatus.Paid;
-    }
+    public bool IsPaid() => Status != OrderTableStatus.Paid;
 
-    public bool HasVouchers()
+    public bool HasVouchers() => Vouchers switch
     {
-        if (Vouchers == null)
-        {
-            return false;
-        }
-        return Vouchers.Count > 0;
-    }
+        null => false,
+        _ => Vouchers.Count > 0,
+    };
 }

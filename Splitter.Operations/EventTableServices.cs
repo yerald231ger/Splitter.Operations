@@ -7,9 +7,9 @@ namespace Splitter.Operations;
 
 public class EventTableServices(
     ILogger<EventTableServices> logger,
-    IEventTableRepository eventTableRepository)
+    IEventTableUnitOfWork eventTableRepository)
 {
-    private readonly IEventTableRepository _eventTableRepository = eventTableRepository;
+    private readonly IEventTableUnitOfWork _eventTableRepository = eventTableRepository;
     private readonly ILogger<EventTableServices> _logger = logger;
 
     public EventTable CreateEvent(string name)
@@ -89,14 +89,14 @@ public class EventTableServices(
             return orderTable;
         }
 
-        if (orderTable.Total >= orderTable.Vouchers!.Sum(v => v.Amount) + amount)
-        {
-            orderTable.Status = OrderTableStatus.Closed;
-            orderTable.PaidAt = DateTime.Now;
-            orderTable = _eventTableRepository.UpdateOrder(orderTable);
-        }
-
         orderTable = _eventTableRepository.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
+
+        if (orderTable.Total < orderTable.Vouchers!.Sum(v => v.Amount) + amount)
+            return orderTable;
+
+        orderTable.Status = OrderTableStatus.Closed;
+        orderTable.PaidAt = DateTime.Now;
+        orderTable = _eventTableRepository.UpdateOrder(orderTable);
 
         return orderTable;
     }

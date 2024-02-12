@@ -11,9 +11,8 @@ public class Voucher
     public static Voucher Create(decimal amount, Tip tip)
     {
         if (amount <= 0)
-        {
             throw new ArgumentException("cannot be less than or equal to 0", nameof(amount));
-        }
+
         return new Voucher
         {
             Amount = amount,

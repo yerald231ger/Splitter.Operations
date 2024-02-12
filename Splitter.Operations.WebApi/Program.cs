@@ -1,7 +1,5 @@
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Splitter.Operations.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddLogging(builder => builder.AddConsole());
+
 
 builder.Services.AddCors(builder =>
 {

@@ -2,7 +2,7 @@
 
 namespace Splitter.Operations.Infrastructure;
 
-public interface IEventTableRepository : IRepository<EventTable, Guid>
+public interface IProductRepository : IRepository<Product, Guid>
 {
-    
+
 }

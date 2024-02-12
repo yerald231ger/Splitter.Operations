@@ -1,6 +1,6 @@
 using System.IO.Compression;
 using Microsoft.EntityFrameworkCore;
-using Splitter.Operations.Rest;
+using Splitter.Operations.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,7 +83,7 @@ app.MapPost("/api/tableevent", (EventTableDto dto, SplitterDbContext splitterDbC
         logger.LogError(e, "Error while adding EventTable");
         throw;
     }
-});
+}).Produces<int>(StatusCodes.Status201Created);
 
 app.MapGet("/api/tableevent", (SplitterDbContext splitterDbContext, ILogger<Program> logger) =>
 {

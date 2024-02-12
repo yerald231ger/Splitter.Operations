@@ -1,4 +1,4 @@
-﻿namespace Splitter.Operations.Rest;
+﻿namespace Splitter.Operations.WebApi;
 
 public class EventTableDto
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Splitter.Operations.Rest;
+namespace Splitter.Operations.WebApi;
 
 public class SplitterDbContext(DbContextOptions options) : DbContext(options)
 {

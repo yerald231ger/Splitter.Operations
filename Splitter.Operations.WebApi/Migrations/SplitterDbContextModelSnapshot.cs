@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Splitter.Operations.Rest;
+using Splitter.Operations.WebApi;
 
 #nullable disable
 
-namespace Splitter.Operations.Rest.Migrations
+namespace Splitter.Operations.WebApi.Migrations
 {
     [DbContext(typeof(SplitterDbContext))]
     partial class SplitterDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace Splitter.Operations.Rest.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Splitter.Operations.Rest.EventTable", b =>
+            modelBuilder.Entity("Splitter.Operations.WebApi.EventTable", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

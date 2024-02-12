@@ -8,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(builder => {
+builder.Services.AddLogging(builder => builder.AddConsole());
+
+builder.Services.AddCors(builder =>
+{
     builder.AddPolicy("SplitterFront", policy =>
     {
         policy.WithOrigins("http://localhost:4321")
@@ -48,7 +51,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -61,22 +64,40 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-app.MapPost("/api/tableevent", (EventTableDto dto, SplitterDbContext splitterDbContext) =>
+app.MapPost("/api/tableevent", (EventTableDto dto, SplitterDbContext splitterDbContext, ILogger<Program> logger) =>
 {
-    var eventtable = new EventTable
+    try
     {
-        Name = dto.name,
-        Content = dto.content,
-    };
+        var eventtable = new EventTable
+        {
+            Name = dto.name,
+            Content = dto.content,
+        };
 
-    splitterDbContext.EventTables.Add(eventtable);
-    splitterDbContext.SaveChanges();
+        logger.LogInformation("EventTable: {name}, {content}", eventtable.Name, eventtable.Content);
+        splitterDbContext.EventTables.Add(eventtable);
+        splitterDbContext.SaveChanges();
+    }
+    catch (Exception e)
+    {
+        logger.LogError(e, "Error while adding EventTable");
+        throw;
+    }
 });
 
-app.MapGet("/api/tableevent", (SplitterDbContext splitterDbContext) =>
+app.MapGet("/api/tableevent", (SplitterDbContext splitterDbContext, ILogger<Program> logger) =>
 {
-    var eventtables = splitterDbContext.EventTables.ToList();
-    return eventtables;
+    try
+    {
+        var eventtables = splitterDbContext.EventTables.ToList();
+        logger.LogInformation("EventTables: {count}", eventtables.Count);
+        return eventtables;
+    }
+    catch (Exception e)
+    {
+        logger.LogError(e, "Error while adding EventTable");
+        throw;
+    }
 });
 
 app.Run();

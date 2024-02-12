@@ -1,5 +1,7 @@
 using System.IO.Compression;
+using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Splitter.Operations.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +66,7 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-app.MapPost("/api/tableevent", (EventTableDto dto, SplitterDbContext splitterDbContext, ILogger<Program> logger) =>
+app.MapPost("/api/tableevent", async (EventTableDto dto, SplitterDbContext splitterDbContext, ILogger<Program> logger) =>
 {
     try
     {
@@ -74,16 +76,19 @@ app.MapPost("/api/tableevent", (EventTableDto dto, SplitterDbContext splitterDbC
             Content = dto.content,
         };
 
-        logger.LogInformation("EventTable: {name}, {content}", eventtable.Name, eventtable.Content);
-        splitterDbContext.EventTables.Add(eventtable);
-        splitterDbContext.SaveChanges();
+        var result = splitterDbContext.EventTables.Add(eventtable);        
+        await splitterDbContext.SaveChangesAsync();
+
+        return Results.Created($"/api/tableevent/{result.Entity.Id}", result.Entity);
     }
     catch (Exception e)
     {
         logger.LogError(e, "Error while adding EventTable");
         throw;
     }
-}).Produces<int>(StatusCodes.Status201Created);
+})
+.Produces(201, responseType: typeof(EventTable))
+.WithOpenApi();
 
 app.MapGet("/api/tableevent", (SplitterDbContext splitterDbContext, ILogger<Program> logger) =>
 {

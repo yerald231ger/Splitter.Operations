@@ -91,12 +91,20 @@ app.MapGet("/api/tableevent", (SplitterDbContext splitterDbContext, ILogger<Prog
     {
         var eventtables = splitterDbContext.EventTables.ToList();
         logger.LogInformation("EventTables: {count}", eventtables.Count);
+        throw new Exception("Error while getting EventTable");
         return eventtables;
     }
     catch (Exception e)
     {
-        logger.LogError(e, "Error while adding EventTable");
-        throw;
+        logger.LogError(e, "Error while getting EventTable");
+        return [
+            new EventTable()
+            {
+                Name = "Error",
+                Content = e.Message
+            }
+        
+        ];
     }
 });
 

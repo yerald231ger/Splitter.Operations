@@ -4,7 +4,7 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Data.SqlServer;
 
-public class ProductRepository(DbContext dbContext)
+public class ProductRepository(SplitterDbContext dbContext)
 : Repository<Product, Guid>(dbContext), IProductRepository
 {
 }

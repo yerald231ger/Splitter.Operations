@@ -2,10 +2,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Splitter.Operations.Infrastructure\Splitter.Operations.Infrastructure.csproj" />
+    <ProjectReference Include="..\Splitter.Operations\Splitter.Operations.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DependencyInjection/" />
   </ItemGroup>
 
   <PropertyGroup>

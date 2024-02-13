@@ -17,4 +17,12 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Splitter.Operations.Infrastructure\Splitter.Operations.Infrastructure.csproj" />
+    <ProjectReference Include="..\Splitter.Operations\Splitter.Operations.csproj" />
+    <ProjectReference Include="..\Splitter.Operations.Data.SqlServer\Splitter.Operations.Data.SqlServer.csproj" />
+    <ProjectReference Include="..\Splitter.Operations.Models\Splitter.Operations.Models.csproj" />
+    <ProjectReference Include="..\Splitter.Operations.Constants\Splitter.Operations.Constants.csproj" />
+  </ItemGroup>
+
 </Project>

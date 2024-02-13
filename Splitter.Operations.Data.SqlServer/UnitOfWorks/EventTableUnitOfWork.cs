@@ -5,7 +5,7 @@ using Splitter.Operations.Models;
 namespace Splitter.Operations.Data.SqlServer;
 
 public class EventTableUnitOfWork(
-    DbContext context,
+    SplitterDbContext context,
     IEventTableRepository eventTableRepository,
     IOrderTableRepository orderTableRepository,
     IProductRepository productRepository,
@@ -16,7 +16,7 @@ public class EventTableUnitOfWork(
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IVoucherRepository _voucherRepository = voucherRepository;
 
-    private readonly DbContext _context = context;
+    private readonly SplitterDbContext _context = context;
 
     public async Task<EventTable> CreateEventTableAsync(EventTable eventTable)
     {

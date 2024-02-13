@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Splitter.Operations.Constants;
 using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Models;
 
@@ -9,96 +8,96 @@ public class EventTableServices(
     ILogger<EventTableServices> logger,
     IEventTableUnitOfWork eventTableRepository)
 {
-    private readonly IEventTableUnitOfWork _eventTableRepository = eventTableRepository;
+    private readonly IEventTableUnitOfWork evenTableUnitOfWork = eventTableRepository;
     private readonly ILogger<EventTableServices> _logger = logger;
 
-    public EventTable CreateEvent(string name)
+    public async Task<EventTable> CreateEvent(string name)
     {
         _logger.LogInformation("Creating Event Table");
-        var eventtable = _eventTableRepository.CreateEventTable(EventTable.Create(name));
-        return eventtable;
+        var evenTTableId = await evenTableUnitOfWork.CreateEventTableAsync(EventTable.Create(name));
+        return evenTTableId;
     }
 
-    public OrderTable OrderProduct(Guid eventTableId, string productName, decimal productPrice)
+    public async Task<OrderTable> OrderProduct(Guid eventTableId, string productName, decimal productPrice)
     {
         _logger.LogInformation("Ordering Product");
 
-        var product = Product.Create(productName, productPrice);
-
-        var eventTable = _eventTableRepository.GetEventTable(eventTableId)
+        var eventTable = await evenTableUnitOfWork.GetEventTable(eventTableId)
         ?? throw new ArgumentException($"Event Table with id {eventTableId} not found");
 
         if (eventTable.HasOrderTable())
         {
-            _eventTableRepository.AddProductToOrder(eventTable.OrderTable!.Id, product);
+            var product = Product.Create(productName, productPrice, eventTable.OrderTable!.Id);
+            await evenTableUnitOfWork.AddProductToOrder(eventTable.OrderTable!.Id, product);
             return eventTable.OrderTable;
         }
         else
         {
-            var orderTable = _eventTableRepository.AddTableOrder(OrderTable.Create());
-            _eventTableRepository.AddProductToOrder(orderTable.Id, product);
+            var orderTable = await evenTableUnitOfWork.AddTableOrder(OrderTable.Create());
+
+            var product = Product.Create(productName, productPrice, orderTable.Id);
+            await evenTableUnitOfWork.AddProductToOrder(orderTable.Id, product);
             return orderTable;
         }
     }
 
-    public OrderTable CloseOrder(Guid orderId)
+    public async Task<OrderTable> CloseOrder(Guid orderId)
     {
         _logger.LogInformation("Closing Order");
-        var orderTable = _eventTableRepository.GetOrder(orderId)
+        var orderTable = await evenTableUnitOfWork.GetOrder(orderId)
         ?? throw new ArgumentException($"Order with id {orderId} not found");
 
-        orderTable.Total = orderTable.Products?.Sum(p => p.Price) ?? 0;
-        orderTable.Status = OrderTableStatus.Closed;
-        orderTable.ClosedAt = DateTime.Now;
+        orderTable.Total = orderTable.SumAllProducts();
+        orderTable.CloseOrder();
 
-        orderTable = _eventTableRepository.UpdateOrder(orderTable);
+        await evenTableUnitOfWork.UpdateOrder(orderTable);
 
         return orderTable;
     }
 
-    public OrderTable PayOrder(Guid orderId, decimal amount, int tip)
+    public async Task<Voucher> PayTotalOrder(Guid orderId, decimal amount, int tip)
     {
         _logger.LogInformation("Paying Order");
-        var orderTable = _eventTableRepository.GetOrder(orderId)
+        var orderTable = await evenTableUnitOfWork.GetOrder(orderId)
         ?? throw new ArgumentException($"Order with id {orderId} not found");
+
+        var voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
 
         if (orderTable.Total > amount)
         {
             throw new ArgumentException($"Amount {amount} is less than the total {orderTable.Total}");
         }
 
-        orderTable = _eventTableRepository.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
+        orderTable.PaidOrder();
 
-        orderTable.Status = OrderTableStatus.Paid;
-        orderTable.PaidAt = DateTime.Now;
+        await evenTableUnitOfWork.UpdateOrder(orderTable);
 
-        orderTable = _eventTableRepository.UpdateOrder(orderTable);
-
-        return orderTable;
+        return voucher;
     }
 
-    public OrderTable PayPartialOrder(Guid orderId, decimal amount, int tip)
+    public async Task<Voucher> PayPartialOrder(Guid orderId, decimal amount, int tip)
     {
         _logger.LogInformation("Paying Partial Order");
-        var orderTable = _eventTableRepository.GetOrder(orderId)
+        var orderTable = await evenTableUnitOfWork.GetOrder(orderId)
         ?? throw new ArgumentException($"Order with id {orderId} not found");
+
+        Voucher voucher;
 
         if (!orderTable.HasVouchers())
         {
-            orderTable = _eventTableRepository.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
-            return orderTable;
+            voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
+            return voucher;
         }
 
-        orderTable = _eventTableRepository.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
+        voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
 
-        if (orderTable.Total < orderTable.Vouchers!.Sum(v => v.Amount) + amount)
-            return orderTable;
+        if (orderTable.Total < orderTable.SummAllVouchers())
+            return voucher;
 
-        orderTable.Status = OrderTableStatus.Closed;
-        orderTable.PaidAt = DateTime.Now;
-        orderTable = _eventTableRepository.UpdateOrder(orderTable);
+        orderTable.PaidOrder();
+        await evenTableUnitOfWork.UpdateOrder(orderTable);
 
-        return orderTable;
+        return voucher;
     }
 
 }

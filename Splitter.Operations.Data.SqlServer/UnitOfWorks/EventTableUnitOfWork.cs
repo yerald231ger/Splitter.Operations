@@ -1,43 +1,66 @@
-﻿using Splitter.Operations.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
+using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Data.SqlServer;
 
-public class EventTableUnitOfWork : IEventTableUnitOfWork
-{   
-    
-    public int AddProductToOrder(Guid id, object product)
+public class EventTableUnitOfWork(
+    DbContext context,
+    IEventTableRepository eventTableRepository,
+    IOrderTableRepository orderTableRepository,
+    IProductRepository productRepository,
+    IVoucherRepository voucherRepository) : IEventTableUnitOfWork
+{
+    private readonly IEventTableRepository _eventTableRepository = eventTableRepository;
+    private readonly IOrderTableRepository _orderTableRepository = orderTableRepository;
+    private readonly IProductRepository _productRepository = productRepository;
+    private readonly IVoucherRepository _voucherRepository = voucherRepository;
+
+    private readonly DbContext _context = context;
+
+    public async Task<EventTable> CreateEventTableAsync(EventTable eventTable)
     {
-        throw new NotImplementedException();
+        eventTable = await _eventTableRepository.AddAsync(eventTable);
+        return eventTable;
     }
 
-    public OrderTable AddTableOrder(OrderTable orderTable)
+    public async Task<Guid> AddProductToOrder(Guid orderTableId, Product product)
     {
-        throw new NotImplementedException();
+        product.OrderTableId = orderTableId;
+        product = await _productRepository.AddAsync(product);
+        return product.Id;
     }
 
-    public OrderTable AddVoucherToOrder(Guid id, Voucher voucher)
+    public Task<OrderTable> AddTableOrder(OrderTable orderTable)
     {
-        throw new NotImplementedException();
+        return _orderTableRepository.AddAsync(orderTable);
     }
 
-    public EventTable CreateEventTable(EventTable eventTable)
+    public Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher)
     {
-        throw new NotImplementedException();
+        voucher.OrderTableId = id;
+        return _voucherRepository.AddAsync(voucher);
     }
 
-    public EventTable GetEventTable(Guid eventTableId)
+
+    public Task<EventTable?> GetEventTable(Guid eventTableId)
     {
-        throw new NotImplementedException();
+        return _eventTableRepository.GetEventTableWithOrder(eventTableId);
     }
 
-    public OrderTable GetOrder(Guid orderId)
+    public Task<OrderTable?> GetOrder(Guid orderId)
     {
-        throw new NotImplementedException();
+        return _orderTableRepository.GetByIdAsync(orderId);
     }
 
-    public OrderTable UpdateOrder(OrderTable orderTable)
+    public Task<Guid> UpdateOrder(OrderTable orderTable)
     {
-        throw new NotImplementedException();
+        _orderTableRepository.UpdateAsync(orderTable);
+        return Task.FromResult(orderTable.Id);
+    }
+
+    public Task<int> SaveChangesAsync()
+    {
+        return _context.SaveChangesAsync();
     }
 }

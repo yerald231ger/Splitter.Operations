@@ -4,11 +4,13 @@ namespace Splitter.Operations.Infrastructure;
 
 public interface IEventTableUnitOfWork
 {
-    int AddProductToOrder(Guid id, object product);
-    OrderTable AddTableOrder(OrderTable orderTable);
-    OrderTable AddVoucherToOrder(Guid id, Voucher voucher);
-    EventTable CreateEventTable(EventTable eventTable);
-    EventTable GetEventTable(Guid eventTableId);
-    OrderTable GetOrder(Guid orderId);
-    OrderTable UpdateOrder(OrderTable orderTable);
+    Task<Guid> AddProductToOrder(Guid orderTableId, Product product);
+    Task<OrderTable> AddTableOrder(OrderTable orderTable);
+    Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher);
+    Task<EventTable> CreateEventTableAsync(EventTable eventTable);
+    Task<EventTable?> GetEventTable(Guid eventTableId);
+    Task<OrderTable?> GetOrder(Guid orderId);
+    Task<Guid> UpdateOrder(OrderTable orderTable);
+    
+    Task<int> SaveChangesAsync();
 }

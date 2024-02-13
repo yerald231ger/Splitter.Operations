@@ -7,6 +7,9 @@ public class Voucher
     public decimal Total { get; set; }
     public Tip Tip { get; set; }
     public DateTime CreatedAt { get; set; }
+    public Guid OrderTableId { get; set; }
+
+    public virtual OrderTable? OrderTable { get; set; }
 
     public static Voucher Create(decimal amount, Tip tip)
     {

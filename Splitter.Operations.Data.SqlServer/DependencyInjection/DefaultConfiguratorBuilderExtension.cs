@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Splitter.Operations.Infrastructure;
 
@@ -9,6 +10,7 @@ public static class DefaultConfiguratorBuilderExtension
 
     public static SplitterDataBuilder AddSqlServer(
         this SplitterDataBuilder builder,
+        IConfiguration configuration,
     ServiceLifetime lifeTime = ServiceLifetime.Scoped)
     {
         builder.SplitterBuilder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -20,7 +22,8 @@ public static class DefaultConfiguratorBuilderExtension
 
         builder.SplitterBuilder.Services.AddDbContext<SplitterDbContext>(options =>
         {
-            options.UseSqlServer("Server=tcp:splitterserver.database.windows.net,1433;Initial Catalog=splitterdb;Persist Security Info=False;User ID=splitteradmin;Password=mevmiz-8zovnU-cywqoh;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+            var connectionString = configuration.GetConnectionString("SplitterDb");
+            options.UseSqlServer(connectionString);
             options.EnableDetailedErrors(false);
             options.EnableSensitiveDataLogging(false);
         });

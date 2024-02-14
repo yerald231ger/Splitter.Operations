@@ -7,12 +7,15 @@ public class OrderTable
 {
     public Guid Id { get; set; }
     public decimal Total { get; set; }
-    public List<Product>? Products { get; set; }
-    public List<Voucher>? Vouchers { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ClosedAt { get; set; }
     public DateTime PaidAt { get; set; }
     public OrderTableStatus Status { get; private set; }
+
+    public Guid EventTableId { get; set; }
+    public virtual EventTable? EventTable { get; set; }
+    public virtual List<Product>? Products { get; set; }
+    public virtual List<Voucher>? Vouchers { get; set; }
 
     public static OrderTable Create() => new();
 

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.Operations.Constan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.Operations.Data.SqlServer", "Splitter.Operations.Data.SqlServer\Splitter.Operations.Data.SqlServer.csproj", "{B027B5D9-B154-4104-8C6E-1133A5142D9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.Operations.Interface", "Splitter.Operations.Interface\Splitter.Operations.Interface.csproj", "{5603C011-6C4E-4318-AFA0-9520CE732DE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{B027B5D9-B154-4104-8C6E-1133A5142D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B027B5D9-B154-4104-8C6E-1133A5142D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B027B5D9-B154-4104-8C6E-1133A5142D9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5603C011-6C4E-4318-AFA0-9520CE732DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5603C011-6C4E-4318-AFA0-9520CE732DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5603C011-6C4E-4318-AFA0-9520CE732DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5603C011-6C4E-4318-AFA0-9520CE732DE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

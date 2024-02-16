@@ -17,7 +17,12 @@ public class OrderTable
     public virtual List<Product>? Products { get; set; }
     public virtual List<Voucher>? Vouchers { get; set; }
 
-    public static OrderTable Create() => new();
+    public static OrderTable Create(Guid eventTableId) => new()
+    {
+        EventTableId = eventTableId,
+        CreatedAt = DateTime.Now,
+        Status = OrderTableStatus.Open
+    };
 
     public bool IsClosed() => Status != OrderTableStatus.Closed;
 

@@ -11,8 +11,8 @@ public abstract class Repository<TEntity, TKey>(DbContext dbContext) : IReposito
     public async Task<TEntity> AddAsync(TEntity entity)
     {
         var result = await _entities.AddAsync(entity);
+        var exit = await Context.SaveChangesAsync();
         result.State = EntityState.Detached;
-        await Context.SaveChangesAsync();
         return result.Entity;
     }
 

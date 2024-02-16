@@ -29,11 +29,15 @@ public class EventTableServices(
         {
             var product = Product.Create(productName, productPrice, eventTable.OrderTable!.Id);
             await evenTableUnitOfWork.AddProductToOrder(eventTable.OrderTable!.Id, product);
+            eventTable.OrderTable!.Total += productPrice;
+            await evenTableUnitOfWork.UpdateOrder(eventTable.OrderTable!);
             return eventTable.OrderTable;
         }
         else
         {
-            var orderTable = await evenTableUnitOfWork.AddTableOrder(OrderTable.Create());
+            var orderTable = OrderTable.Create(eventTableId);
+            orderTable.Total = productPrice;
+            orderTable = await evenTableUnitOfWork.AddTableOrder(orderTable);
 
             var product = Product.Create(productName, productPrice, orderTable.Id);
             await evenTableUnitOfWork.AddProductToOrder(orderTable.Id, product);

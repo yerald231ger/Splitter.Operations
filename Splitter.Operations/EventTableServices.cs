@@ -47,7 +47,7 @@ public class EventTableServices(
             if (string.IsNullOrWhiteSpace(command.ProductName))
                 return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidProductName);
 
-            if (eventTable.HasOrderTable())
+            if (eventTable.Hasorder())
             {
                 var product = Product.Create(command.ProductName, command.ProductPrice, eventTable.Order!.Id);
                 await evenTableUnitOfWork.AddProductToOrder(eventTable.Order!.Id, product);

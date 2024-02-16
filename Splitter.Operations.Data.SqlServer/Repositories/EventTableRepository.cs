@@ -22,7 +22,7 @@ public class EventTableRepository(SplitterDbContext dbContext)
                 .ToListAsync();
 
             eventTable.Order.Vouchers = await SplitterDbContext.Vouchers
-                .Where(v => v.OrderTableId == eventTable.Order.Id)
+                .Where(v => v.OrderId == eventTable.Order.Id)
                 .ToListAsync();
         }
 

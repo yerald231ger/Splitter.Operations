@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Splitter.Operations.Constants;
+﻿using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -30,14 +29,14 @@ public static class TableEventRoute
         .WithOpenApi();
 
         // Add a product to an order
-        routeGroup.MapPost("/{EventTableId:guid}/ordertable/product", async (Guid eventTableId, CreateProductDto dto, EventTableServices eventTableServices) =>
+        routeGroup.MapPost("/{EventTableId:guid}/order/product", async (Guid eventTableId, CreateProductDto dto, EventTableServices eventTableServices) =>
         {
             var command = new CreateProductCommand(dto.CommandId, eventTableId, dto.ProductName, dto.ProductPrice);
             var result = await eventTableServices.OrderProduct(command);
 
             return result switch
             {
-                SptCreateCompletion<Order> r => Results.Created($"/ordertable/{r.Created!.Id}", result),
+                SptCreateCompletion<Order> r => Results.Created($"/order/{r.Created!.Id}", result),
                 SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
                 {
                     SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
@@ -54,7 +53,7 @@ public static class TableEventRoute
         .WithOpenApi();
 
         // Close an order
-        routeGroup.MapPatch("/{EventTableId:guid}/ordertable", async (Guid eventTableId, UpdateOrderDto dto, EventTableServices eventTableServices) =>
+        routeGroup.MapPatch("/{EventTableId:guid}/order", async (Guid eventTableId, UpdateOrderDto dto, EventTableServices eventTableServices) =>
         {
             var command = new UpdateOrderCommand(dto.CommandId, eventTableId, dto.OrderStatus);
             var result = await eventTableServices.CloseOrder(command);
@@ -77,7 +76,7 @@ public static class TableEventRoute
         .WithOpenApi();
 
         // Create a new payment to an order
-        routeGroup.MapPost("/{EventTableId:guid}/ordertable/voucher", async (Guid eventTableId, CreateVoucherDto dto, EventTableServices eventTableServices) =>
+        routeGroup.MapPost("/{EventTableId:guid}/order/voucher", async (Guid eventTableId, CreateVoucherDto dto, EventTableServices eventTableServices) =>
         {
             var command = new CreateVoucherCommand(dto.CommandId, eventTableId, dto.Amount, dto.Tip, dto.IsPartialPayment);
             SptResult result = command.IsPartialPayment ?
@@ -86,7 +85,7 @@ public static class TableEventRoute
 
             return result switch
             {
-                SptCreateCompletion<Voucher> r => Results.Created($"/ordertable/{r.Created!.Id}", result),
+                SptCreateCompletion<Voucher> r => Results.Created($"/order/{r.Created!.Id}", result),
                 SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
                 {
                     SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),

@@ -38,7 +38,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderTables",
+                name: "Orders",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -51,9 +51,9 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderTables", x => x.Id);
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderTables_EventTables_EventTableId",
+                        name: "FK_Orders_EventTables_EventTableId",
                         column: x => x.EventTableId,
                         principalTable: "EventTables",
                         principalColumn: "Id");
@@ -66,15 +66,15 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    OrderTableId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_OrderTables_OrderTableId",
-                        column: x => x.OrderTableId,
-                        principalTable: "OrderTables",
+                        name: "FK_Products_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -87,15 +87,15 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    OrderTableId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vouchers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Vouchers_OrderTables_OrderTableId",
-                        column: x => x.OrderTableId,
-                        principalTable: "OrderTables",
+                        name: "FK_Vouchers_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -125,15 +125,15 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderTables_EventTableId",
-                table: "OrderTables",
+                name: "IX_Orders_EventTableId",
+                table: "Orders",
                 column: "EventTableId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_OrderTableId",
+                name: "IX_Products_OrderId",
                 table: "Products",
-                column: "OrderTableId");
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductTag_TagsId",
@@ -141,9 +141,9 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                 column: "TagsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vouchers_OrderTableId",
+                name: "IX_Vouchers_OrderId",
                 table: "Vouchers",
-                column: "OrderTableId");
+                column: "OrderId");
         }
 
         /// <inheritdoc />
@@ -162,7 +162,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "OrderTables");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "EventTables");

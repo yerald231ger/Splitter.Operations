@@ -4,7 +4,7 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Data.SqlServer;
 
-public class OrderTableConfiguration : IEntityTypeConfiguration<Order>
+public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
@@ -16,8 +16,8 @@ public class OrderTableConfiguration : IEntityTypeConfiguration<Order>
         .HasForeignKey(p => p.OrderId);
 
         builder.HasMany(t => t.Vouchers)
-        .WithOne(p => p.OrderTable)
-        .HasForeignKey(p => p.OrderTableId);
+        .WithOne(p => p.Order)
+        .HasForeignKey(p => p.OrderId);
         
         builder.Property(p => p.Id)
         .ValueGeneratedOnAdd();

@@ -7,12 +7,12 @@ namespace Splitter.Operations.Data.SqlServer;
 public class EventTableUnitOfWork(
     SplitterDbContext context,
     IEventTableRepository eventTableRepository,
-    IOrderTableRepository orderTableRepository,
+    IOrderRepository orderRepository,
     IProductRepository productRepository,
     IVoucherRepository voucherRepository) : IEventTableUnitOfWork
 {
     private readonly IEventTableRepository _eventTableRepository = eventTableRepository;
-    private readonly IOrderTableRepository _orderTableRepository = orderTableRepository;
+    private readonly IOrderRepository _orderRepository = orderRepository;
     private readonly IProductRepository _productRepository = productRepository;
     private readonly IVoucherRepository _voucherRepository = voucherRepository;
 
@@ -24,21 +24,21 @@ public class EventTableUnitOfWork(
         return eventTable;
     }
 
-    public async Task<Guid> AddProductToOrder(Guid orderTableId, Product product)
+    public async Task<Guid> AddProductToOrder(Guid orderId, Product product)
     {
-        product.OrderId = orderTableId;
+        product.OrderId = orderId;
         product = await _productRepository.AddAsync(product);
         return product.Id;
     }
 
-    public Task<Order> AddTableOrder(Order orderTable)
+    public Task<Order> AddTableOrder(Order order)
     {
-        return _orderTableRepository.AddAsync(orderTable);
+        return _orderRepository.AddAsync(order);
     }
 
     public Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher)
     {
-        voucher.OrderTableId = id;
+        voucher.OrderId = id;
         return _voucherRepository.AddAsync(voucher);
     }
 
@@ -50,14 +50,14 @@ public class EventTableUnitOfWork(
 
     public Task<Order?> GetOrder(Guid eventTableId)
     {
-        var order = _context.OrderTables.ToList();
-        return _context.OrderTables.FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
+        var order = _context.Orders.ToList();
+        return _context.Orders.FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
     }
 
-    public Task<Guid> UpdateOrder(Order orderTable)
+    public Task<Guid> UpdateOrder(Order order)
     {
-        _orderTableRepository.UpdateAsync(orderTable);
-        return Task.FromResult(orderTable.Id);
+        _orderRepository.UpdateAsync(order);
+        return Task.FromResult(order.Id);
     }
 
     public Task<int> SaveChangesAsync()

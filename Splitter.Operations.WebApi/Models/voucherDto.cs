@@ -9,7 +9,7 @@ public record VoucherDto(
     decimal total,
     decimal tipAmount,
     DateTime createdAt,
-    Guid orderTableId)
+    Guid orderId)
 {
     public static VoucherDto ToDto(Voucher voucher) => new(
         voucher.Id,
@@ -17,6 +17,6 @@ public record VoucherDto(
         voucher.Total,
         voucher.Total - voucher.Amount,
         voucher.CreatedAt,
-        voucher.OrderTableId);
+        voucher.OrderId);
 }
 #pragma warning restore IDE1006 // Naming Styles

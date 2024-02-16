@@ -11,9 +11,9 @@ public record class OrderDto(
     List<ProductDto> products,
     List<VoucherDto> vouchers)
 {
-    internal static OrderDto ToDto(Order orderTable) =>
-        new(orderTable.Id, orderTable.Total, orderTable.Status.ToString(),
-            orderTable.Products?.Select(ProductDto.ToDto).ToList() ?? [],
-            orderTable.Vouchers?.Select(VoucherDto.ToDto).ToList() ?? []);
+    internal static OrderDto ToDto(Order order) =>
+        new(order.Id, order.Total, order.Status.ToString(),
+            order.Products?.Select(ProductDto.ToDto).ToList() ?? [],
+            order.Vouchers?.Select(VoucherDto.ToDto).ToList() ?? []);
 }
 #pragma warning restore IDE1006 // Naming Styles

@@ -6,7 +6,7 @@ namespace Splitter.Operations.Data.SqlServer;
 public class SplitterDbContext : DbContext
 {
     public DbSet<EventTable> EventTables { get; set; }
-    public DbSet<Order> OrderTables { get; set; }
+    public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }
     public DbSet<Tag> Tags { get; set; }

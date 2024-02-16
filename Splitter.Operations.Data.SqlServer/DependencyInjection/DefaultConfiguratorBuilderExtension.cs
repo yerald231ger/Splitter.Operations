@@ -16,7 +16,7 @@ public static class DefaultConfiguratorBuilderExtension
         builder.SplitterBuilder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.SplitterBuilder.Services.AddScoped<ITagRepository, TagRepository>();
         builder.SplitterBuilder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
-        builder.SplitterBuilder.Services.AddScoped<IOrderTableRepository, OrderTableRepository>();
+        builder.SplitterBuilder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.SplitterBuilder.Services.AddScoped<IEventTableRepository, EventTableRepository>();
         builder.SplitterBuilder.Services.AddScoped<IEventTableUnitOfWork, EventTableUnitOfWork>();
 

@@ -12,7 +12,7 @@ using Splitter.Operations.Data.SqlServer;
 namespace Splitter.Operations.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SplitterDbContext))]
-    [Migration("20240214162355_Init")]
+    [Migration("20240216182347_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -61,7 +61,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                     b.ToTable("EventTables", (string)null);
                 });
 
-            modelBuilder.Entity("Splitter.Operations.Models.OrderTable", b =>
+            modelBuilder.Entity("Splitter.Operations.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,7 +90,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                     b.HasIndex("EventTableId")
                         .IsUnique();
 
-                    b.ToTable("OrderTables", (string)null);
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Splitter.Operations.Models.Product", b =>
@@ -103,7 +103,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OrderTableId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
@@ -111,7 +111,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderTableId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -143,7 +143,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderTableId")
+                    b.Property<Guid>("OrderId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Total")
@@ -151,7 +151,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderTableId");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Vouchers", (string)null);
                 });
@@ -171,43 +171,43 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Splitter.Operations.Models.OrderTable", b =>
+            modelBuilder.Entity("Splitter.Operations.Models.Order", b =>
                 {
                     b.HasOne("Splitter.Operations.Models.EventTable", "EventTable")
-                        .WithOne("OrderTable")
-                        .HasForeignKey("Splitter.Operations.Models.OrderTable", "EventTableId");
+                        .WithOne("Order")
+                        .HasForeignKey("Splitter.Operations.Models.Order", "EventTableId");
 
                     b.Navigation("EventTable");
                 });
 
             modelBuilder.Entity("Splitter.Operations.Models.Product", b =>
                 {
-                    b.HasOne("Splitter.Operations.Models.OrderTable", "OrderTable")
+                    b.HasOne("Splitter.Operations.Models.Order", "Order")
                         .WithMany("Products")
-                        .HasForeignKey("OrderTableId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OrderTable");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Splitter.Operations.Models.Voucher", b =>
                 {
-                    b.HasOne("Splitter.Operations.Models.OrderTable", "OrderTable")
+                    b.HasOne("Splitter.Operations.Models.Order", "Order")
                         .WithMany("Vouchers")
-                        .HasForeignKey("OrderTableId")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OrderTable");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Splitter.Operations.Models.EventTable", b =>
                 {
-                    b.Navigation("OrderTable");
+                    b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Splitter.Operations.Models.OrderTable", b =>
+            modelBuilder.Entity("Splitter.Operations.Models.Order", b =>
                 {
                     b.Navigation("Products");
 

@@ -40,6 +40,7 @@ public class EventTableServices(
             _logger.LogInformation("Ordering Product");
 
             var eventTable = await evenTableUnitOfWork.GetEventTable(command.EventTableId);
+            var order = eventTable?.Order;
 
             if (eventTable is null)
                 return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.EventTableNotFound);
@@ -50,19 +51,19 @@ public class EventTableServices(
             if (eventTable.HasOrder())
             {
                 var product = Product.Create(command.ProductName, command.ProductPrice);
-                eventTable.Order!.AddProduct(product);
-
-                await evenTableUnitOfWork.UpdateOrder(eventTable.Order!);
-                return _sptInterface.CompleteCreate(command.CommandId, eventTable.Order);
+                order!.AddProduct(product);
             }
             else
             {
-                var order = Order.Create(command.EventTableId);
+                order = Order.Create(command.EventTableId);
                 var product = Product.Create(command.ProductName, command.ProductPrice);
                 order.AddProduct(product);
-                order = await evenTableUnitOfWork.AddTableOrder(order);
-                return _sptInterface.CompleteCreate(command.CommandId, order);
+                eventTable.AddOrder(order);
             }
+
+            await evenTableUnitOfWork.UpdateTableEvent(eventTable);
+            await evenTableUnitOfWork.SaveChangesAsync();
+            return _sptInterface.CompleteCreate(command.CommandId, order);
         }
         catch (Exception e)
         {
@@ -114,12 +115,12 @@ public class EventTableServices(
             if (command.Tip is < 0 or > 100)
                 return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidTip);
 
-            var voucher = await evenTableUnitOfWork.AddVoucherToOrder(order.Id, Voucher.Create(command.Amount, command.Tip));
-
+            var voucher = Voucher.Create(command.Amount, command.Tip);
+            order.AddVoucher(voucher);
             order.PaidOrder();
 
             await evenTableUnitOfWork.UpdateOrder(order);
-
+            await evenTableUnitOfWork.SaveChangesAsync();
             return _sptInterface.CompleteCreate(command.CommandId, voucher);
         }
         catch (Exception e)
@@ -134,7 +135,7 @@ public class EventTableServices(
         try
         {
             _logger.LogInformation("Paying Partial Order");
-            var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
+            var order = await evenTableUnitOfWork.GetOrderWithVouchers(command.EventTableId);
 
             if (order is null)
                 return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
@@ -145,22 +146,10 @@ public class EventTableServices(
             if (command.Tip is < 0 or > 100)
                 return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidTip);
 
-            Voucher voucher;
-
-            if (!order.HasVouchers())
-            {
-                voucher = await evenTableUnitOfWork.AddVoucherToOrder(order.Id, Voucher.Create(command.Amount, command.Tip));
-                return _sptInterface.CompleteCreate(command.CommandId, voucher);
-            }
-
-            voucher = await evenTableUnitOfWork.AddVoucherToOrder(order.Id, Voucher.Create(command.Amount, command.Tip));
-
-            if (order.Total < order.SummAllVouchers())
-                return _sptInterface.CompleteCreate(command.CommandId, voucher);
-
-            order.PaidOrder();
+            var voucher = Voucher.Create(command.Amount, command.Tip);
+            order.AddVoucher(voucher);
             await evenTableUnitOfWork.UpdateOrder(order);
-
+            await evenTableUnitOfWork.SaveChangesAsync();
             return _sptInterface.CompleteCreate(command.CommandId, voucher);
         }
         catch (Exception e)

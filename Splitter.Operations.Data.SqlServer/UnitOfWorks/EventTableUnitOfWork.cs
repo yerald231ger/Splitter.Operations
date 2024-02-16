@@ -31,37 +31,49 @@ public class EventTableUnitOfWork(
         return product.Id;
     }
 
-    public Task<Order> AddTableOrder(Order order)
+    public async Task<Order> AddTableOrder(Order order)
     {
-        return _orderRepository.AddAsync(order);
+        return await _orderRepository.AddAsync(order);
     }
 
-    public Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher)
+    public async Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher)
     {
         voucher.OrderId = id;
-        return _voucherRepository.AddAsync(voucher);
+        return await _voucherRepository.AddAsync(voucher);
     }
 
 
-    public Task<EventTable?> GetEventTable(Guid eventTableId)
+    public async Task<EventTable?> GetEventTable(Guid eventTableId)
     {
-        return _eventTableRepository.GetEventTableWithOrder(eventTableId);
+        return await _eventTableRepository.GetEventTableWithOrder(eventTableId);
     }
 
-    public Task<Order?> GetOrder(Guid eventTableId)
+    public async Task<Order?> GetOrder(Guid eventTableId)
     {
-        var order = _context.Orders.ToList();
-        return _context.Orders.FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
+        return await _context.Orders.FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
     }
 
-    public Task<Guid> UpdateOrder(Order order)
+    public async Task<Guid> UpdateOrder(Order order)
     {
-        _orderRepository.UpdateAsync(order);
-        return Task.FromResult(order.Id);
+        _context.Entry(order).State = EntityState.Modified;
+        return await Task.FromResult(order.Id);
     }
 
-    public Task<int> SaveChangesAsync()
+    public async Task<int> SaveChangesAsync()
     {
-        return _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
+    }
+
+    public async Task<Guid> UpdateTableEvent(EventTable eventTable)
+    {
+        _context.Entry(eventTable).State = EntityState.Modified;
+        return await Task.FromResult(eventTable.Id);
+    }
+
+    public async Task<Order?> GetOrderWithVouchers(Guid eventTableId)
+    {
+        return await _context.Orders
+            .Include(o => o.Vouchers)
+            .FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
     }
 }

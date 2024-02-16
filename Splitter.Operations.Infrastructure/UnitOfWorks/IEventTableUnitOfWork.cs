@@ -13,4 +13,6 @@ public interface IEventTableUnitOfWork
     Task<Guid> UpdateOrder(Order order);
     
     Task<int> SaveChangesAsync();
+    Task<Guid> UpdateTableEvent(EventTable eventTable);
+    Task<Order?> GetOrderWithVouchers(Guid eventTableId);
 }

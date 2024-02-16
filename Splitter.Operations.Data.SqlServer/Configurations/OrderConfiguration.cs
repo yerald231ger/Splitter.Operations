@@ -24,5 +24,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 
         builder.Property(p => p.Total)
         .HasColumnType("decimal(18, 2)");
+
+        builder.Property(p => p.TotalPaid)
+        .HasColumnType("decimal(18, 2)");
     }
 }

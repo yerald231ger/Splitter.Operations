@@ -12,7 +12,7 @@ using Splitter.Operations.Data.SqlServer;
 namespace Splitter.Operations.Data.SqlServer.Migrations
 {
     [DbContext(typeof(SplitterDbContext))]
-    [Migration("20240216182347_Init")]
+    [Migration("20240216214951_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -83,6 +83,9 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("TotalPaid")
                         .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("Id");

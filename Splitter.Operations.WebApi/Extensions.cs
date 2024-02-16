@@ -18,6 +18,7 @@ public static class ToDtoExtension
         order.CommandId,
         order.Created!.Id,
         order.Created.Total,
+        order.Created.TotalPaid,
         order.Created.Products?.Select(p => p.ToDto()).ToList() ?? [],
         order.Created.Vouchers?.Select(p => p.ToDto()).ToList() ?? [])
     {

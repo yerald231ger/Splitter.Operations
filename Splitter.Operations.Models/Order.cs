@@ -7,6 +7,7 @@ public class Order
 {
     public Guid Id { get; set; }
     public decimal Total { get; set; }
+    public decimal TotalPaid { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ClosedAt { get; set; }
     public DateTime PaidAt { get; set; }
@@ -24,11 +25,11 @@ public class Order
         Status = OrderStatus.Open
     };
 
-    public bool IsClosed() => Status != OrderStatus.Closed;
+    public bool IsClosed() => Status == OrderStatus.Closed;
 
-    public bool IsPaid() => Status != OrderStatus.Paid;
+    public bool IsPaid() => Status == OrderStatus.Paid;
 
-    public bool IsOpen() => Status != OrderStatus.Open;
+    public bool IsOpen() => Status == OrderStatus.Open;
 
     public void SumPrice(decimal price) => Total += price;
 
@@ -70,4 +71,12 @@ public class Order
     }
 
     public decimal SummAllVouchers() => Vouchers?.Sum(voucher => voucher.Total) ?? 0;
+
+    public void AddVoucher(Voucher voucher)
+    {
+        TotalPaid += voucher.Amount;
+        if (TotalPaid >= Total)
+            PaidOrder();
+        Vouchers!.Add(voucher);
+    }
 }

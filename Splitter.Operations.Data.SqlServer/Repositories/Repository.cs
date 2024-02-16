@@ -33,9 +33,9 @@ public abstract class Repository<TEntity, TKey>(DbContext dbContext) : IReposito
         return result;
     }
 
-    public Task<int> UpdateAsync(TEntity entity)
+    public async Task<int> UpdateAsync(TEntity entity)
     {
         Context.Entry(entity).State = EntityState.Modified;
-        return Context.SaveChangesAsync();
+        return await Context.SaveChangesAsync();
     }
 }

@@ -43,6 +43,7 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ClosedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaidAt = table.Column<DateTime>(type: "datetime2", nullable: false),

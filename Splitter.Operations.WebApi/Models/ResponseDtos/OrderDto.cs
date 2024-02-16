@@ -8,6 +8,7 @@ public record class OrderDto(
     Guid commandId,
     Guid id,
     decimal total,
+    decimal totalPaid,
     List<ProductVODto> products,
     List<VoucherVODto> vouchers)
     : ReponseDto(commandId)

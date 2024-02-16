@@ -27,5 +27,6 @@ public class EventTableRepository(SplitterDbContext dbContext)
         }
 
         return eventTable;
+        
     }
 }

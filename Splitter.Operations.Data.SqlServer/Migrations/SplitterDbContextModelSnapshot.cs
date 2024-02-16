@@ -82,6 +82,9 @@ namespace Splitter.Operations.Data.SqlServer.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18, 2)");
 
+                    b.Property<decimal>("TotalPaid")
+                        .HasColumnType("decimal(18, 2)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EventTableId")

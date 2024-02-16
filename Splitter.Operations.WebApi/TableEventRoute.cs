@@ -66,6 +66,7 @@ public static class TableEventRoute
             }
         }).Produces(204);
 
+
         routeGroup.MapPost("/{id:guid}/ordertable/voucher", async (
             Guid id,
             decimal amount,

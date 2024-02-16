@@ -14,8 +14,8 @@ public class Order
 
     public Guid EventTableId { get; set; }
     public virtual EventTable? EventTable { get; set; }
-    public virtual List<Product>? Products { get; set; }
-    public virtual List<Voucher>? Vouchers { get; set; }
+    public virtual List<Product>? Products { get; set; } = [];
+    public virtual List<Voucher>? Vouchers { get; set; } = [];
 
     public static Order Create(Guid eventTableId) => new()
     {
@@ -29,6 +29,8 @@ public class Order
     public bool IsPaid() => Status != OrderStatus.Paid;
 
     public bool IsOpen() => Status != OrderStatus.Open;
+
+    public void SumPrice(decimal price) => Total += price;
 
     public decimal SumAllProducts() => Products?.Sum(product => product.Price) ?? 0;
     public void CloseOrder()
@@ -54,6 +56,18 @@ public class Order
         null => false,
         _ => Vouchers.Count > 0,
     };
+
+    public void AddProduct(Product product)
+    {
+        SumPrice(product.Price);
+        Products!.Add(product);
+    }
+    
+    public void RemoveProduct(Product product)
+    {
+        SumPrice(-product.Price);
+        Products!.Add(product);
+    }
 
     public decimal SummAllVouchers() => Vouchers?.Sum(voucher => voucher.Total) ?? 0;
 }

@@ -17,7 +17,7 @@ public static class TableEventRoute
 
             return result switch
             {
-                SptCreateCompletion<EventTable> r => Results.Created($"/{r.Created!.Id}", result),
+                SptCreateCompletion<EventTable> r => Results.Created($"/{r.Created!.Id}", r.ToDto()),
                 SptRejection<SplitterRejectionCodes> => Results.BadRequest(result),
                 _ => Results.StatusCode(500)
             };
@@ -36,7 +36,7 @@ public static class TableEventRoute
 
             return result switch
             {
-                SptCreateCompletion<Order> r => Results.Created($"/order/{r.Created!.Id}", result),
+                SptCreateCompletion<Order> r => Results.Created($"/order/{r.Created!.Id}", r.ToDto()),
                 SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
                 {
                     SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
@@ -85,7 +85,7 @@ public static class TableEventRoute
 
             return result switch
             {
-                SptCreateCompletion<Voucher> r => Results.Created($"/order/{r.Created!.Id}", result),
+                SptCreateCompletion<Voucher> r => Results.Created($"/order/{r.Created!.Id}", r.ToDto()),
                 SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
                 {
                     SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
@@ -95,7 +95,7 @@ public static class TableEventRoute
                 _ => Results.StatusCode(500)
             };
         })
-        .Produces(201, responseType: typeof(VoucherDto))
+        .Produces(201, responseType: typeof(VoucherVODto))
         .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
         .Produces(404)
         .Produces(500)

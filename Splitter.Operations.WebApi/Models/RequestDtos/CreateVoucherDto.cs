@@ -1,6 +1,6 @@
 ﻿namespace Splitter.Operations.WebApi;
 
-public class CreateVoucherDto : RequestDto
+public record CreateVoucherDto : RequestDto
 {
     public decimal Amount { get; set; }
     public int Tip { get; set; }

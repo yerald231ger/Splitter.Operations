@@ -6,17 +6,15 @@ public class Product
     public required string Name { get; set; }
     public decimal Price { get; set; }
     public List<Tag>? Tags { get; set; }
-    public required Guid OrderId { get; set; }
+    public Guid OrderId { get; set; }
     public virtual Order? Order { get; set; }
 
-    public static Product Create(string name, decimal price, Guid orderId) =>
-        string.IsNullOrWhiteSpace(name) || orderId == Guid.Empty
-            ? throw new ArgumentException("cannot be null or empty", nameof(name))
-            : new Product
-            {
-                Name = name,
-                Price = price,
-                Tags = [],
-                OrderId = orderId
-            };
+    public static Product Create(string name, decimal price) => new()
+    {
+        Name = name,
+        Price = price,
+        Tags = []
+    };
+
+
 }

@@ -47,22 +47,20 @@ public class EventTableServices(
             if (string.IsNullOrWhiteSpace(command.ProductName))
                 return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidProductName);
 
-            if (eventTable.Hasorder())
+            if (eventTable.HasOrder())
             {
-                var product = Product.Create(command.ProductName, command.ProductPrice, eventTable.Order!.Id);
-                await evenTableUnitOfWork.AddProductToOrder(eventTable.Order!.Id, product);
-                eventTable.Order!.Total += command.ProductPrice;
+                var product = Product.Create(command.ProductName, command.ProductPrice);
+                eventTable.Order!.AddProduct(product);
+
                 await evenTableUnitOfWork.UpdateOrder(eventTable.Order!);
                 return _sptInterface.CompleteCreate(command.CommandId, eventTable.Order);
             }
             else
             {
                 var order = Order.Create(command.EventTableId);
-                order.Total = command.ProductPrice;
+                var product = Product.Create(command.ProductName, command.ProductPrice);
+                order.AddProduct(product);
                 order = await evenTableUnitOfWork.AddTableOrder(order);
-
-                var product = Product.Create(command.ProductName, command.ProductPrice, order.Id);
-                await evenTableUnitOfWork.AddProductToOrder(order.Id, product);
                 return _sptInterface.CompleteCreate(command.CommandId, order);
             }
         }

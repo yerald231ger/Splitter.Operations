@@ -17,5 +17,5 @@ public class EventTable
                 FinishedAt = DateTime.MaxValue
             };
 
-    public bool Hasorder() => Order != null;
+    public bool HasOrder() => Order != null;
 }

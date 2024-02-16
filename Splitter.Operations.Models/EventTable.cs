@@ -6,7 +6,7 @@ public class EventTable
     public required string Name { get; set; }
     public required DateTime CreatedAt { get; set; }
     public required DateTime FinishedAt { get; set; }
-    public OrderTable? OrderTable { get; set; }
+    public Order? Order { get; set; }
 
     public static EventTable Create(string name) => string.IsNullOrWhiteSpace(name)
             ? throw new ArgumentException($"cannot be null or empty", nameof(name))
@@ -17,5 +17,5 @@ public class EventTable
                 FinishedAt = DateTime.MaxValue
             };
 
-    public bool HasOrderTable() => OrderTable != null;
+    public bool HasOrderTable() => Order != null;
 }

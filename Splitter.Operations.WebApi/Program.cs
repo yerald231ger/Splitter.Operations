@@ -1,9 +1,11 @@
 using Splitter.Operations;
 using Splitter.Operations.Data.SqlServer;
+using Splitter.Operations.Interface;
 using Splitter.Operations.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCommandBuilder();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

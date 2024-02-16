@@ -2,7 +2,7 @@
 
 namespace Splitter.Operations.Infrastructure;
 
-public interface IOrderTableRepository : IRepository<OrderTable, Guid>
+public interface IOrderTableRepository : IRepository<Order, Guid>
 {
 
 }

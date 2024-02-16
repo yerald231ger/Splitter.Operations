@@ -1,106 +1,174 @@
 ﻿using Microsoft.Extensions.Logging;
+using Splitter.Operations.Constants;
 using Splitter.Operations.Infrastructure;
+using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations;
 
 public class EventTableServices(
     ILogger<EventTableServices> logger,
-    IEventTableUnitOfWork eventTableRepository)
+    IEventTableUnitOfWork eventTableRepository,
+    ISptInterface sptInterface)
 {
     private readonly IEventTableUnitOfWork evenTableUnitOfWork = eventTableRepository;
     private readonly ILogger<EventTableServices> _logger = logger;
+    private readonly ISptInterface _sptInterface = sptInterface;
 
-    public async Task<EventTable> CreateEvent(string name)
+    public async Task<SptResult> CreateEvent(CreateEventTableCommand command)
     {
-        _logger.LogInformation("Creating Event Table");
-        var evenTTableId = await evenTableUnitOfWork.CreateEventTableAsync(EventTable.Create(name));
-        return evenTTableId;
-    }
-
-    public async Task<OrderTable> OrderProduct(Guid eventTableId, string productName, decimal productPrice)
-    {
-        _logger.LogInformation("Ordering Product");
-
-        var eventTable = await evenTableUnitOfWork.GetEventTable(eventTableId)
-        ?? throw new ArgumentException($"Event Table with id {eventTableId} not found");
-
-        if (eventTable.HasOrderTable())
+        try
         {
-            var product = Product.Create(productName, productPrice, eventTable.OrderTable!.Id);
-            await evenTableUnitOfWork.AddProductToOrder(eventTable.OrderTable!.Id, product);
-            eventTable.OrderTable!.Total += productPrice;
-            await evenTableUnitOfWork.UpdateOrder(eventTable.OrderTable!);
-            return eventTable.OrderTable;
+            _logger.LogInformation("Creating Event Table");
+            if (string.IsNullOrWhiteSpace(command.Name))
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidEventTableName);
+
+            var evenTTable = await evenTableUnitOfWork.CreateEventTableAsync(EventTable.Create(command.Name));
+            return _sptInterface.CompleteCreate(command.CommandId, evenTTable);
         }
-        else
+        catch (Exception e)
         {
-            var orderTable = OrderTable.Create(eventTableId);
-            orderTable.Total = productPrice;
-            orderTable = await evenTableUnitOfWork.AddTableOrder(orderTable);
-
-            var product = Product.Create(productName, productPrice, orderTable.Id);
-            await evenTableUnitOfWork.AddProductToOrder(orderTable.Id, product);
-            return orderTable;
+            _logger.LogError(e, "Error while creating event table");
+            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
         }
     }
 
-    public async Task<OrderTable> CloseOrder(Guid orderId)
+    public async Task<SptResult> OrderProduct(CreateProductCommand command)
     {
-        _logger.LogInformation("Closing Order");
-        var orderTable = await evenTableUnitOfWork.GetOrder(orderId)
-        ?? throw new ArgumentException($"Order with id {orderId} not found");
+        try
+        {
+            _logger.LogInformation("Ordering Product");
 
-        orderTable.Total = orderTable.SumAllProducts();
-        orderTable.CloseOrder();
+            var eventTable = await evenTableUnitOfWork.GetEventTable(command.EventTableId);
 
-        await evenTableUnitOfWork.UpdateOrder(orderTable);
+            if (eventTable is null)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.EventTableNotFound);
 
-        return orderTable;
+            if (string.IsNullOrWhiteSpace(command.ProductName))
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidProductName);
+
+            if (eventTable.HasOrderTable())
+            {
+                var product = Product.Create(command.ProductName, command.ProductPrice, eventTable.Order!.Id);
+                await evenTableUnitOfWork.AddProductToOrder(eventTable.Order!.Id, product);
+                eventTable.Order!.Total += command.ProductPrice;
+                await evenTableUnitOfWork.UpdateOrder(eventTable.Order!);
+                return _sptInterface.CompleteCreate(command.CommandId, eventTable.Order);
+            }
+            else
+            {
+                var order = Order.Create(command.EventTableId);
+                order.Total = command.ProductPrice;
+                order = await evenTableUnitOfWork.AddTableOrder(order);
+
+                var product = Product.Create(command.ProductName, command.ProductPrice, order.Id);
+                await evenTableUnitOfWork.AddProductToOrder(order.Id, product);
+                return _sptInterface.CompleteCreate(command.CommandId, order);
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while ordering product");
+            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+        }
     }
 
-    public async Task<Voucher> PayTotalOrder(Guid eventTable, decimal amount, int tip)
+    public async Task<SptResult> CloseOrder(UpdateOrderCommand command)
     {
-        _logger.LogInformation("Paying Order");
-        var orderTable = await evenTableUnitOfWork.GetOrder(eventTable)
-        ?? throw new ArgumentException($"Order with id {eventTable} not found");
-
-        var voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
-
-        if (orderTable.Total > amount)
+        try
         {
-            throw new ArgumentException($"Amount {amount} is less than the total {orderTable.Total}");
+            _logger.LogInformation("Closing Order");
+            var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
+
+            if (order is null)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
+
+            order.Total = order.SumAllProducts();
+            order.CloseOrder();
+
+            await evenTableUnitOfWork.UpdateOrder(order);
+
+            return _sptInterface.CompleteUpdate(command.CommandId, order);
         }
-
-        orderTable.PaidOrder();
-
-        await evenTableUnitOfWork.UpdateOrder(orderTable);
-        
-        return voucher;
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while closing order");
+            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+        }
     }
 
-    public async Task<Voucher> PayPartialOrder(Guid eventTable, decimal amount, int tip)
+    public async Task<SptResult> PayTotalOrder(CreateVoucherCommand command)
     {
-        _logger.LogInformation("Paying Partial Order");
-        var orderTable = await evenTableUnitOfWork.GetOrder(eventTable)
-        ?? throw new ArgumentException($"Order with id {eventTable} not found");
-
-        Voucher voucher;
-
-        if (!orderTable.HasVouchers())
+        try
         {
-            voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
-            return voucher;
+            _logger.LogInformation("Paying Order");
+            var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
+
+            if (order is null)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
+
+            if (order.IsPaid())
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderAlreadyPaid);
+
+            if (order.Total > command.Amount)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InsufficientFunds);
+
+            if (command.Tip is < 0 or > 100)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidTip);
+
+            var voucher = await evenTableUnitOfWork.AddVoucherToOrder(order.Id, Voucher.Create(command.Amount, command.Tip));
+
+            order.PaidOrder();
+
+            await evenTableUnitOfWork.UpdateOrder(order);
+
+            return _sptInterface.CompleteCreate(command.CommandId, voucher);
         }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while paying order");
+            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+        }
+    }
 
-        voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
+    public async Task<SptResult> PayPartialOrder(CreateVoucherCommand command)
+    {
+        try
+        {
+            _logger.LogInformation("Paying Partial Order");
+            var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
 
-        if (orderTable.Total < orderTable.SummAllVouchers())
-            return voucher;
+            if (order is null)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
 
-        orderTable.PaidOrder();
-        await evenTableUnitOfWork.UpdateOrder(orderTable);
+            if (order.IsPaid())
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderAlreadyPaid);
 
-        return voucher;
+            if (command.Tip is < 0 or > 100)
+                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidTip);
+
+            Voucher voucher;
+
+            if (!order.HasVouchers())
+            {
+                voucher = await evenTableUnitOfWork.AddVoucherToOrder(order.Id, Voucher.Create(command.Amount, command.Tip));
+                return _sptInterface.CompleteCreate(command.CommandId, voucher);
+            }
+
+            voucher = await evenTableUnitOfWork.AddVoucherToOrder(order.Id, Voucher.Create(command.Amount, command.Tip));
+
+            if (order.Total < order.SummAllVouchers())
+                return _sptInterface.CompleteCreate(command.CommandId, voucher);
+
+            order.PaidOrder();
+            await evenTableUnitOfWork.UpdateOrder(order);
+
+            return _sptInterface.CompleteCreate(command.CommandId, voucher);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while paying partial order");
+            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+        }
     }
 }

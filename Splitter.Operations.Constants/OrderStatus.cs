@@ -1,6 +1,6 @@
 ﻿namespace Splitter.Operations.Constants;
 
-public enum OrderTableStatus
+public enum OrderStatus
 {
     Open,
     Closed,

@@ -4,16 +4,16 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Data.SqlServer;
 
-public class OrderTableConfiguration : IEntityTypeConfiguration<OrderTable>
+public class OrderTableConfiguration : IEntityTypeConfiguration<Order>
 {
-    public void Configure(EntityTypeBuilder<OrderTable> builder)
+    public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.ToTable("OrderTables")
+        builder.ToTable("Orders")
         .HasKey(t => t.Id);
 
         builder.HasMany(t => t.Products)
-        .WithOne(p => p.OrderTable)
-        .HasForeignKey(p => p.OrderTableId);
+        .WithOne(p => p.Order)
+        .HasForeignKey(p => p.OrderId);
 
         builder.HasMany(t => t.Vouchers)
         .WithOne(p => p.OrderTable)

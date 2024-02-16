@@ -26,12 +26,12 @@ public class EventTableUnitOfWork(
 
     public async Task<Guid> AddProductToOrder(Guid orderTableId, Product product)
     {
-        product.OrderTableId = orderTableId;
+        product.OrderId = orderTableId;
         product = await _productRepository.AddAsync(product);
         return product.Id;
     }
 
-    public Task<OrderTable> AddTableOrder(OrderTable orderTable)
+    public Task<Order> AddTableOrder(Order orderTable)
     {
         return _orderTableRepository.AddAsync(orderTable);
     }
@@ -48,13 +48,13 @@ public class EventTableUnitOfWork(
         return _eventTableRepository.GetEventTableWithOrder(eventTableId);
     }
 
-    public Task<OrderTable?> GetOrder(Guid eventTableId)
+    public Task<Order?> GetOrder(Guid eventTableId)
     {
         var order = _context.OrderTables.ToList();
         return _context.OrderTables.FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
     }
 
-    public Task<Guid> UpdateOrder(OrderTable orderTable)
+    public Task<Guid> UpdateOrder(Order orderTable)
     {
         _orderTableRepository.UpdateAsync(orderTable);
         return Task.FromResult(orderTable.Id);

@@ -1,4 +1,9 @@
-﻿namespace Splitter.Operations.WebApi;
+﻿using Microsoft.AspNetCore.Mvc;
+using Splitter.Operations.Constants;
+using Splitter.Operations.Interface;
+using Splitter.Operations.Models;
+
+namespace Splitter.Operations.WebApi;
 
 public static class TableEventRoute
 {
@@ -7,80 +12,95 @@ public static class TableEventRoute
         var routeGroup = app.MapGroup("/tableevent");
 
         // Create a new event table
-        routeGroup.MapPost("/", async (string name, EventTableServices eventTableServices, ILogger<Program> logger) =>
+        routeGroup.MapPost("/", async (CreateEventTableCommand command, EventTableServices eventTableServices) =>
         {
-            try
-            {
-                var eventTable = await eventTableServices.CreateEvent(name);
+            var result = await eventTableServices.CreateEvent(command);
 
-                return Results.Created($"/{eventTable.Id}",
-                    EventTableDto.ToDto(eventTable));
-            }
-            catch (Exception e)
+            return result switch
             {
-                logger.LogError(e, "Error while creating EventTable");
-                return Results.StatusCode(500);
-            }
+                SptCreateCompletion<EventTable> r => Results.Created($"/{r.Created!.Id}", result),
+                SptRejection<SplitterRejectionCodes> => Results.BadRequest(result),
+                _ => Results.StatusCode(500)
+            };
+
         })
         .Produces(201, responseType: typeof(EventTableDto))
+        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(500)
         .WithOpenApi();
 
         // Add a product to an order
-        routeGroup.MapPost("/{id:guid}/ordertable/product", async (Guid id, string productName, decimal productPrice, EventTableServices eventTableServices, ILogger<Program> logger) =>
+        routeGroup.MapPost("/{EventTableId:guid}/ordertable/product", async (Guid eventTableId, CreateProductDto dto, EventTableServices eventTableServices) =>
         {
-            try
-            {
-                var orderTable = await eventTableServices.OrderProduct(id, productName, productPrice);
+            var command = new CreateProductCommand(dto.CommandId, eventTableId, dto.ProductName, dto.ProductPrice);
+            var result = await eventTableServices.OrderProduct(command);
 
-                return Results.Created($"/ordertable/{orderTable.Id}",
-                    OrderTableDto.ToDto(orderTable));
-            }
-            catch (Exception e)
+            return result switch
             {
-                logger.LogError(e, "Error while ordering product");
-                return Results.StatusCode(500);
-            }
-        }).Produces(201, responseType: typeof(OrderTableDto));
+                SptCreateCompletion<Order> r => Results.Created($"/ordertable/{r.Created!.Id}", result),
+                SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
+                {
+                    SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
+                    _ => Results.BadRequest(c)
+                }
+                ,
+                _ => Results.StatusCode(500)
+            };
+        })
+        .Produces(201, responseType: typeof(OrderDto))
+        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(404)
+        .Produces(500)
+        .WithOpenApi();
 
         // Close an order
-        routeGroup.MapPatch("/{id:guid}/ordertable", async (Guid id, EventTableServices eventTableServices, ILogger<Program> logger, string status = "closed") =>
+        routeGroup.MapPatch("/{EventTableId:guid}/ordertable", async (Guid eventTableId, UpdateOrderDto dto, EventTableServices eventTableServices) =>
         {
-            try
+            var command = new UpdateOrderCommand(dto.CommandId, eventTableId, dto.OrderStatus);
+            var result = await eventTableServices.CloseOrder(command);
+            return result switch
             {
-                await eventTableServices.CloseOrder(id);
-                return Results.NoContent();
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error while closing order");
-                return Results.StatusCode(500);
-            }
-        }).Produces(204);
+                SptUpdateCompletion<Order> r => Results.NoContent(),
+                SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
+                {
+                    SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
+                    _ => Results.BadRequest(c)
+                }
+                ,
+                _ => Results.StatusCode(500)
+            };
+        })
+        .Produces(204)
+        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(404)
+        .Produces(500)
+        .WithOpenApi();
 
         // Create a new payment to an order
-        routeGroup.MapPost("/{id:guid}/ordertable/voucher", async (Guid id, decimal amount, int tip, bool isPartialPayment, EventTableServices eventTableServices, ILogger<Program> logger) =>
+        routeGroup.MapPost("/{EventTableId:guid}/ordertable/voucher", async (Guid eventTableId, CreateVoucherDto dto, EventTableServices eventTableServices) =>
         {
-            try
+            var command = new CreateVoucherCommand(dto.CommandId, eventTableId, dto.Amount, dto.Tip, dto.IsPartialPayment);
+            SptResult result = command.IsPartialPayment ?
+            await eventTableServices.PayPartialOrder(command) :
+            await eventTableServices.PayTotalOrder(command);
+
+            return result switch
             {
-                if (isPartialPayment)
+                SptCreateCompletion<Voucher> r => Results.Created($"/ordertable/{r.Created!.Id}", result),
+                SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
                 {
-                    var voucher = await eventTableServices.PayPartialOrder(id, amount, tip);
-                    return Results.Created($"/ordertable/{voucher.OrderTableId}",
-                        VoucherDto.ToDto(voucher));
+                    SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
+                    _ => Results.BadRequest(c)
                 }
-                else
-                {
-                    var voucher = await eventTableServices.PayTotalOrder(id, amount, tip);
-                    return Results.Created($"/ordertable/{voucher.OrderTableId}",
-                        VoucherDto.ToDto(voucher));
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error while paying order");
-                return Results.StatusCode(500);
-            }
-        }).Produces(201, responseType: typeof(VoucherDto));
+                ,
+                _ => Results.StatusCode(500)
+            };
+        })
+        .Produces(201, responseType: typeof(VoucherDto))
+        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(404)
+        .Produces(500)
+        .WithOpenApi();
     }
 }
 

@@ -3,49 +3,49 @@ using Splitter.Operations.Constants;
 
 namespace Splitter.Operations.Models;
 
-public class OrderTable
+public class Order
 {
     public Guid Id { get; set; }
     public decimal Total { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime ClosedAt { get; set; }
     public DateTime PaidAt { get; set; }
-    public OrderTableStatus Status { get; private set; }
+    public OrderStatus Status { get; private set; }
 
     public Guid EventTableId { get; set; }
     public virtual EventTable? EventTable { get; set; }
     public virtual List<Product>? Products { get; set; }
     public virtual List<Voucher>? Vouchers { get; set; }
 
-    public static OrderTable Create(Guid eventTableId) => new()
+    public static Order Create(Guid eventTableId) => new()
     {
         EventTableId = eventTableId,
         CreatedAt = DateTime.Now,
-        Status = OrderTableStatus.Open
+        Status = OrderStatus.Open
     };
 
-    public bool IsClosed() => Status != OrderTableStatus.Closed;
+    public bool IsClosed() => Status != OrderStatus.Closed;
 
-    public bool IsPaid() => Status != OrderTableStatus.Paid;
+    public bool IsPaid() => Status != OrderStatus.Paid;
 
-    public bool IsOpen() => Status != OrderTableStatus.Open;
+    public bool IsOpen() => Status != OrderStatus.Open;
 
     public decimal SumAllProducts() => Products?.Sum(product => product.Price) ?? 0;
     public void CloseOrder()
     {
-        Status = OrderTableStatus.Closed;
+        Status = OrderStatus.Closed;
         ClosedAt = DateTime.Now;
     }
 
     public void OpenOrder()
     {
-        Status = OrderTableStatus.Open;
+        Status = OrderStatus.Open;
         ClosedAt = DateTime.MinValue;
     }
 
     public void PaidOrder()
     {
-        Status = OrderTableStatus.Paid;
+        Status = OrderStatus.Paid;
         PaidAt = DateTime.Now;
     }
 

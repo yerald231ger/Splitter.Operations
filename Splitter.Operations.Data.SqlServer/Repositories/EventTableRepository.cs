@@ -12,17 +12,17 @@ public class EventTableRepository(SplitterDbContext dbContext)
     public async Task<EventTable?> GetEventTableWithOrder(Guid eventTableId)
     {
         var eventTable = await SplitterDbContext.EventTables
-            .Include(e => e.OrderTable)
+            .Include(e => e.Order)
             .FirstOrDefaultAsync(e => e.Id == eventTableId);
 
-        if (eventTable?.OrderTable != null)
+        if (eventTable?.Order != null)
         {
-            eventTable.OrderTable.Products = await SplitterDbContext.Products
-                .Where(p => p.OrderTableId == eventTable.OrderTable.Id)
+            eventTable.Order.Products = await SplitterDbContext.Products
+                .Where(p => p.OrderId == eventTable.Order.Id)
                 .ToListAsync();
 
-            eventTable.OrderTable.Vouchers = await SplitterDbContext.Vouchers
-                .Where(v => v.OrderTableId == eventTable.OrderTable.Id)
+            eventTable.Order.Vouchers = await SplitterDbContext.Vouchers
+                .Where(v => v.OrderTableId == eventTable.Order.Id)
                 .ToListAsync();
         }
 

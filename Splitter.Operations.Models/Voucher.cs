@@ -9,7 +9,7 @@ public class Voucher
     public DateTime CreatedAt { get; set; }
     public Guid OrderTableId { get; set; }
 
-    public virtual OrderTable? OrderTable { get; set; }
+    public virtual Order? OrderTable { get; set; }
 
     public static Voucher Create(decimal amount, Tip tip)
     {

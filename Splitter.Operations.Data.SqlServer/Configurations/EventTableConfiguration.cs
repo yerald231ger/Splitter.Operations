@@ -12,9 +12,9 @@ public class EventTableConfiguration : IEntityTypeConfiguration<EventTable>
         builder.ToTable("EventTables")
         .HasKey(t => t.Id);
 
-        builder.HasOne(p => p.OrderTable)
+        builder.HasOne(p => p.Order)
         .WithOne(p => p.EventTable)
-        .HasForeignKey<OrderTable>(p => p.EventTableId)
+        .HasForeignKey<Order>(p => p.EventTableId)
         .IsRequired(false);
         
         builder.Property(p => p.Id);

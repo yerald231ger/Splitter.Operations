@@ -6,10 +6,8 @@ public static class TableEventRoute
     {
         var routeGroup = app.MapGroup("/tableevent");
 
-        routeGroup.MapPost("/", async (
-            string name,
-            EventTableServices eventTableServices,
-            ILogger<Program> logger) =>
+        // Create a new event table
+        routeGroup.MapPost("/", async (string name, EventTableServices eventTableServices, ILogger<Program> logger) =>
         {
             try
             {
@@ -27,12 +25,8 @@ public static class TableEventRoute
         .Produces(201, responseType: typeof(EventTableDto))
         .WithOpenApi();
 
-        routeGroup.MapPost("/{id:guid}/ordertable/product", async (
-            Guid id,
-            string productName,
-            decimal productPrice,
-            EventTableServices eventTableServices,
-            ILogger<Program> logger) =>
+        // Add a product to an order
+        routeGroup.MapPost("/{id:guid}/ordertable/product", async (Guid id, string productName, decimal productPrice, EventTableServices eventTableServices, ILogger<Program> logger) =>
         {
             try
             {
@@ -48,11 +42,8 @@ public static class TableEventRoute
             }
         }).Produces(201, responseType: typeof(OrderTableDto));
 
-        routeGroup.MapPatch("/{id:guid}/ordertable", async (
-            Guid id,
-            EventTableServices eventTableServices,
-            ILogger<Program> logger,
-            string status = "closed") =>
+        // Close an order
+        routeGroup.MapPatch("/{id:guid}/ordertable", async (Guid id, EventTableServices eventTableServices, ILogger<Program> logger, string status = "closed") =>
         {
             try
             {
@@ -66,14 +57,8 @@ public static class TableEventRoute
             }
         }).Produces(204);
 
-
-        routeGroup.MapPost("/{id:guid}/ordertable/voucher", async (
-            Guid id,
-            decimal amount,
-            int tip,
-            bool isPartialPayment,
-            EventTableServices eventTableServices,
-            ILogger<Program> logger) =>
+        // Create a new payment to an order
+        routeGroup.MapPost("/{id:guid}/ordertable/voucher", async (Guid id, decimal amount, int tip, bool isPartialPayment, EventTableServices eventTableServices, ILogger<Program> logger) =>
         {
             try
             {
@@ -83,7 +68,8 @@ public static class TableEventRoute
                     return Results.Created($"/ordertable/{voucher.OrderTableId}",
                         VoucherDto.ToDto(voucher));
                 }
-                else{
+                else
+                {
                     var voucher = await eventTableServices.PayTotalOrder(id, amount, tip);
                     return Results.Created($"/ordertable/{voucher.OrderTableId}",
                         VoucherDto.ToDto(voucher));

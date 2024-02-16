@@ -59,11 +59,11 @@ public class EventTableServices(
         return orderTable;
     }
 
-    public async Task<Voucher> PayTotalOrder(Guid orderId, decimal amount, int tip)
+    public async Task<Voucher> PayTotalOrder(Guid eventTable, decimal amount, int tip)
     {
         _logger.LogInformation("Paying Order");
-        var orderTable = await evenTableUnitOfWork.GetOrder(orderId)
-        ?? throw new ArgumentException($"Order with id {orderId} not found");
+        var orderTable = await evenTableUnitOfWork.GetOrder(eventTable)
+        ?? throw new ArgumentException($"Order with id {eventTable} not found");
 
         var voucher = await evenTableUnitOfWork.AddVoucherToOrder(orderTable.Id, Voucher.Create(amount, tip));
 
@@ -79,11 +79,11 @@ public class EventTableServices(
         return voucher;
     }
 
-    public async Task<Voucher> PayPartialOrder(Guid orderId, decimal amount, int tip)
+    public async Task<Voucher> PayPartialOrder(Guid eventTable, decimal amount, int tip)
     {
         _logger.LogInformation("Paying Partial Order");
-        var orderTable = await evenTableUnitOfWork.GetOrder(orderId)
-        ?? throw new ArgumentException($"Order with id {orderId} not found");
+        var orderTable = await evenTableUnitOfWork.GetOrder(eventTable)
+        ?? throw new ArgumentException($"Order with id {eventTable} not found");
 
         Voucher voucher;
 
@@ -103,5 +103,4 @@ public class EventTableServices(
 
         return voucher;
     }
-
 }

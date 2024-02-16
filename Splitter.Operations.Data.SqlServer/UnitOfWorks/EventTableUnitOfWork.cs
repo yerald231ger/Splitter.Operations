@@ -48,9 +48,10 @@ public class EventTableUnitOfWork(
         return _eventTableRepository.GetEventTableWithOrder(eventTableId);
     }
 
-    public Task<OrderTable?> GetOrder(Guid orderId)
+    public Task<OrderTable?> GetOrder(Guid eventTableId)
     {
-        return _orderTableRepository.GetByIdAsync(orderId);
+        var order = _context.OrderTables.ToList();
+        return _context.OrderTables.FirstOrDefaultAsync(o => o.EventTableId == eventTableId);
     }
 
     public Task<Guid> UpdateOrder(OrderTable orderTable)

@@ -27,7 +27,10 @@ public enum SptRejectCodes
     InvalidTip = 7,
 
     [Description("Repository Error")]
-    RepositoryError = 8
+    RepositoryError = 8,
+
+    [Description("From date cannot be greater than To date")]
+    InvalidSearchRange = 9
 }
 
 public static class SptRejectCodesExtensions

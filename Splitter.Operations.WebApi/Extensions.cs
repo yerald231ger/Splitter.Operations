@@ -26,6 +26,18 @@ public static class ToDtoExtension
         orderStatus = order.Created.Status
     };
 
+    public static OrderDto ToDto(this Order order)
+    => new(
+        Guid.NewGuid(),
+        order.Id,
+        order.Total,
+        order.TotalPaid,
+        order.Products?.Select(p => p.ToDto()).ToList() ?? [],
+        order.Vouchers?.Select(p => p.ToDto()).ToList() ?? [])
+    {
+        orderStatus = order.Status
+    };
+
     public static VoucherDto ToDto(this SptCreateCompletion<Voucher> voucher)
     => new(
         voucher.CommandId,

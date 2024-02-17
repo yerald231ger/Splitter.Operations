@@ -7,6 +7,7 @@ public static class VolumetricBuilderExtensions
     public static SplitterOperationsBuilder AddEventTableService(this IServiceCollection services)
     {
         services.AddTransient<EventTableServices>();
+        services.AddTransient<OrderService>();
         return new SplitterOperationsBuilder(services);
     }
 

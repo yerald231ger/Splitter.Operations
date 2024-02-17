@@ -4,9 +4,9 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;
 
-public static class TableEventRoute
+public static class TableEventOperationRoutes
 {
-    public static void MapEvenTableRoute(this IEndpointRouteBuilder app)
+    public static void MapEvenTableOperationsRoute(this IEndpointRouteBuilder app)
     {
         var routeGroup = app.MapGroup("/tableevent");
 

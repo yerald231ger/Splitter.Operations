@@ -40,5 +40,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("SplitterFront");
-app.MapEvenTableRoute();
+app.MapEvenTableOperationsRoute();
+app.MapGet("/", () => "Hello World!");
 app.Run();

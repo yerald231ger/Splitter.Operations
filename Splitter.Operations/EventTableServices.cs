@@ -21,7 +21,7 @@ public class EventTableServices(
         {
             _logger.LogInformation("Creating Event Table");
             if (string.IsNullOrWhiteSpace(command.Name))
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidEventTableName);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidEventTableName, SptRejectCodes.InvalidEventTableName.GetDescription());
 
             var evenTTable = await evenTableUnitOfWork.CreateEventTableAsync(EventTable.Create(command.Name));
             return _sptInterface.CompleteCreate(command.CommandId, evenTTable);
@@ -29,7 +29,7 @@ public class EventTableServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while creating event table");
-            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError);
         }
     }
 
@@ -43,10 +43,10 @@ public class EventTableServices(
             var order = eventTable?.Order;
 
             if (eventTable is null)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.EventTableNotFound);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.EventTableNotFound, SptRejectCodes.EventTableNotFound.GetDescription());
 
             if (string.IsNullOrWhiteSpace(command.ProductName))
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidProductName);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidProductName, SptRejectCodes.InvalidProductName.GetDescription());
 
             if (eventTable.HasOrder())
             {
@@ -68,7 +68,7 @@ public class EventTableServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while ordering product");
-            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -80,7 +80,7 @@ public class EventTableServices(
             var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
 
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
 
             order.Total = order.SumAllProducts();
             order.CloseOrder();
@@ -92,7 +92,7 @@ public class EventTableServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while closing order");
-            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -104,16 +104,16 @@ public class EventTableServices(
             var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
 
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
 
             if (order.IsPaid())
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderAlreadyPaid);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderAlreadyPaid, SptRejectCodes.OrderAlreadyPaid.GetDescription());
 
             if (order.Total > command.Amount)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InsufficientFunds);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InsufficientFunds, SptRejectCodes.InsufficientFunds.GetDescription());
 
             if (command.Tip is < 0 or > 100)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidTip);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidTip, SptRejectCodes.InvalidTip.GetDescription());
 
             var voucher = Voucher.Create(command.Amount, command.Tip);
             order.AddVoucher(voucher);
@@ -126,7 +126,7 @@ public class EventTableServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while paying order");
-            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -138,13 +138,13 @@ public class EventTableServices(
             var order = await evenTableUnitOfWork.GetOrderWithVouchers(command.EventTableId);
 
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderNotFound);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
 
             if (order.IsPaid())
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.OrderAlreadyPaid);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderAlreadyPaid, SptRejectCodes.OrderAlreadyPaid.GetDescription());  
 
             if (command.Tip is < 0 or > 100)
-                return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.InvalidTip);
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidTip, SptRejectCodes.InvalidTip.GetDescription());
 
             var voucher = Voucher.Create(command.Amount, command.Tip);
             order.AddVoucher(voucher);
@@ -155,7 +155,7 @@ public class EventTableServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while paying partial order");
-            return _sptInterface.Reject(command.CommandId, SplitterRejectionCodes.RepositoryError);
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
         }
     }
 }

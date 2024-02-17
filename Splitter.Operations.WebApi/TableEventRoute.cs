@@ -18,13 +18,13 @@ public static class TableEventRoute
             return result switch
             {
                 SptCreateCompletion<EventTable> r => Results.Created($"/{r.Created!.Id}", r.ToDto()),
-                SptRejection<SplitterRejectionCodes> => Results.BadRequest(result),
+                SptRejection<SptRejectCodes> => Results.BadRequest(result),
                 _ => Results.StatusCode(500)
             };
 
         })
         .Produces(201, responseType: typeof(EventTableDto))
-        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
         .Produces(500)
         .WithOpenApi();
 
@@ -37,9 +37,9 @@ public static class TableEventRoute
             return result switch
             {
                 SptCreateCompletion<Order> r => Results.Created($"/order/{r.Created!.Id}", r.ToDto()),
-                SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
+                SptRejection<SptRejectCodes> c => c.RejectionCode switch
                 {
-                    SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
+                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -47,7 +47,7 @@ public static class TableEventRoute
             };
         })
         .Produces(201, responseType: typeof(OrderDto))
-        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
         .Produces(404)
         .Produces(500)
         .WithOpenApi();
@@ -60,9 +60,9 @@ public static class TableEventRoute
             return result switch
             {
                 SptUpdateCompletion<Order> r => Results.NoContent(),
-                SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
+                SptRejection<SptRejectCodes> c => c.RejectionCode switch
                 {
-                    SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
+                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -70,7 +70,7 @@ public static class TableEventRoute
             };
         })
         .Produces(204)
-        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
         .Produces(404)
         .Produces(500)
         .WithOpenApi();
@@ -86,9 +86,9 @@ public static class TableEventRoute
             return result switch
             {
                 SptCreateCompletion<Voucher> r => Results.Created($"/order/{r.Created!.Id}", r.ToDto()),
-                SptRejection<SplitterRejectionCodes> c => c.RejectionCode switch
+                SptRejection<SptRejectCodes> c => c.RejectionCode switch
                 {
-                    SplitterRejectionCodes.OrderNotFound => Results.NotFound(result),
+                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -96,7 +96,7 @@ public static class TableEventRoute
             };
         })
         .Produces(201, responseType: typeof(VoucherVODto))
-        .Produces(400, responseType: typeof(SptRejection<SplitterRejectionCodes>))
+        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
         .Produces(404)
         .Produces(500)
         .WithOpenApi();

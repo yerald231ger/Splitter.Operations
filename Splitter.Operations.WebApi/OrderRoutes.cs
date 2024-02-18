@@ -15,7 +15,7 @@ public static class OrderRoutes
     {
         var routeGroup = app.MapGroup("/order");
 
-        routeGroup.MapGet("/", async (Guid id, Guid? commandId, DateTime? from, DateTime? to, OrderService orderService) =>
+        routeGroup.MapGet("/", async (Guid? id, Guid? commandId, DateTime? from, DateTime? to, OrderService orderService) =>
         {
             var result = await orderService.GetOrdersAsync(new GetOrderCommand(id, from, to));
             return result switch

@@ -42,5 +42,5 @@ app.UseHttpsRedirection();
 app.UseCors("SplitterFront");
 app.MapEvenTableOperationsRoute();
 app.MapOrderRoutes();
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Hello World, Gerardo!" );
 app.Run();

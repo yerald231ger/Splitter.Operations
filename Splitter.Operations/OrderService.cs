@@ -13,7 +13,7 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
     public async Task<SptResult> GetOrdersAsync(GetOrderCommand command)
     {
         var orders = await _orderRepository.GetAsync();
-        if (command.OrderId != Guid.Empty)
+        if (command.OrderId != null && command.OrderId != Guid.Empty)
             return _sptInterface.CompleteGet(command.CommandId, orders.Where(x => x.Id == command.OrderId).ToList());
 
         if (command.From != null && command.To == null)
@@ -26,8 +26,7 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
             if (command.From > command.To)
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidSearchRange, SptRejectCodes.InvalidSearchRange.GetDescription());
 
-        var result = await _orderRepository.GetAsync();
-
+        var result = (IEnumerable<Order>)await _orderRepository.GetAsync();
         return _sptInterface.CompleteGet(command.CommandId, result);
     }
 }

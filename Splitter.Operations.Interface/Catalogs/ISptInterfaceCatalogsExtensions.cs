@@ -15,10 +15,10 @@ public static class ISptInterfaceCatalogsExtensions
     public static SptUpsertCompletion<TModel> CompleteUpsert<TModel>(this ISptInterface _, Guid commandId, TModel model) where TModel : class
         => new(commandId, model);
 
-    public static SptGetCompletion<TModel> CompleteGet<TModel>(this ISptInterface _, Guid commandId, TModel model) where TModel : class
+    public static SptGetCompletion<TModel> CompleteGet<TModel>(this ISptInterface _, Guid commandId, TModel model) where TModel : class, new()
         => new(commandId, model);
 
-    public static SptGetManyCompletion<TModel> CompleteGet<TModel>(this ISptInterface _, Guid commandId, IEnumerable<TModel> model) where TModel : class
+    public static SptGetManyCompletion<TModel> CompleteGet<TModel>(this ISptInterface _, Guid commandId, IEnumerable<TModel> model) where TModel : class, new()
         => new(commandId, model);
 
     public static SptCreatedEvent<TModel> CreatedEvent<TModel>(this ISptInterface _, TModel model) where TModel : class

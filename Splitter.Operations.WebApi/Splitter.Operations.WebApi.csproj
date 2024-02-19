@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Splitter.Operations.Interface\Splitter.Operations.Interface.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models/RequestDtos/" />
-  </ItemGroup>
-
 </Project>

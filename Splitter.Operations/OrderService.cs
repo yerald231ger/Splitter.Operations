@@ -12,21 +12,14 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
 
     public async Task<SptResult> GetOrdersAsync(GetOrderCommand command)
     {
-        var orders = await _orderRepository.GetAsync();
+
         if (command.OrderId != null && command.OrderId != Guid.Empty)
-            return _sptInterface.CompleteGet(command.CommandId, orders.Where(x => x.Id == command.OrderId).ToList());
+        {
+            var order = await _orderRepository.GetByIdAsync(command.OrderId.Value);
+            return _sptInterface.CompleteGet(command.CommandId, order != null ? [order] : new List<Order>());
+        }
 
-        if (command.From != null && command.To == null)
-            return _sptInterface.CompleteGet(command.CommandId, orders.Where(x => x.CreatedAt >= command.From).ToList());
-
-        if (command.From == null && command.To != null)
-            return _sptInterface.CompleteGet(command.CommandId, orders.Where(x => x.CreatedAt <= command.To).ToList());
-
-        if (command.From != null && command.To != null)
-            if (command.From > command.To)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidSearchRange, SptRejectCodes.InvalidSearchRange.GetDescription());
-
-        var result = (IEnumerable<Order>)await _orderRepository.GetAsync();
+        var result = (IEnumerable<Order>)await _orderRepository.Filter(command.From, command.To, command.WithProducts, command.WithVouchers);
         return _sptInterface.CompleteGet(command.CommandId, result);
     }
 }

@@ -5,7 +5,8 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;
 
-public class P{
+public class P
+{
     public int MyProperty { get; set; }
 }
 
@@ -15,9 +16,10 @@ public static class OrderRoutes
     {
         var routeGroup = app.MapGroup("/order");
 
-        routeGroup.MapGet("/", async (Guid? id, Guid? commandId, DateTime? from, DateTime? to, OrderService orderService) =>
+        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, OrderService orderService, bool withProducts = false, bool withVouchers = false) =>
         {
-            var result = await orderService.GetOrdersAsync(new GetOrderCommand(id, from, to));
+            var command = new GetOrderCommand(id, from, to, withProducts, withVouchers);
+            var result = await orderService.GetOrdersAsync(command);
             return result switch
             {
                 SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
@@ -28,5 +30,7 @@ public static class OrderRoutes
         .Produces<List<OrderDto>>()
         .Produces<SptRejection<SptRejectCodes>>(400)
         .WithOpenApi();
+
+
     }
 }

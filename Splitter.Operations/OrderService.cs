@@ -1,7 +1,7 @@
-﻿using Splitter.Operations.Constants;
-using Splitter.Operations.Infrastructure;
+﻿using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
+using Splitter.Operations.Specification;
 
 namespace Splitter.Operations;
 
@@ -19,14 +19,16 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
                 var order = await _orderRepository.GetByIdAsync(command.OrderId.Value);
                 return _sptInterface.CompleteGet(command.CommandId, order != null ? [order] : new List<Order>());
             }
-    
-            var result = (IEnumerable<Order>)await _orderRepository.Filter(command.From, command.To, command.WithProducts, command.WithVouchers);
+            
+            var specification = new GetByRangeDateEspecification<Order>(command.From, command.To, x => x.CreatedAt);
+            var result = await _orderRepository.Filter(specification.IsSatisfiedBy);
             return _sptInterface.CompleteGet(command.CommandId, result);
         }
         catch (System.Exception)
         {
-            
+
             throw;
         }
     }
 }
+

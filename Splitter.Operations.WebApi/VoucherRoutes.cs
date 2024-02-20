@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Splitter.Operations.Constants;
+﻿using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -9,12 +8,12 @@ public static class VoucherRoutes
 {
     public static void MapVoucherRoutes(this IEndpointRouteBuilder app)
     {
-        var routeGroup = app.MapGroup("/order");
+        var routeGroup = app.MapGroup("/voucher");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, OrderService orderService, bool withProducts = false, bool withVouchers = false) =>
+        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, VoucherService orderService, bool withProducts = false, bool withVouchers = false) =>
         {
-            var command = new GetOrderCommand(id, from, to, withProducts, withVouchers);
-            var result = await orderService.GetOrdersAsync(command);
+            var command = new GetVoucherCommand(id, from, to);
+            var result = await orderService.GetvouchersAsync(command);
             return result switch
             {
                 SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),

@@ -40,8 +40,8 @@ public abstract class Repository<TEntity, TKey>(DbContext dbContext) : IReposito
         return await Context.SaveChangesAsync();
     }
 
-    public Task<TEntity?> Filter(Expression<Func<TEntity, bool>> predicate)
+    public async Task<List<TEntity>> Filter(Func<TEntity, bool> predicate)
     {
-        throw new NotImplementedException();
+        return await Task.FromResult(Context.Set<TEntity>().Where(predicate).ToList());
     }
 }

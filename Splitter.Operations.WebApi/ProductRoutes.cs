@@ -8,7 +8,7 @@ public static class ProductRoutes
 {
     public static void MapProductRoutes(this IEndpointRouteBuilder app)
     {
-        var routeGroup = app.MapGroup("/order");
+        var routeGroup = app.MapGroup("/product");
 
         routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, ProductService productService) =>
         {

@@ -8,12 +8,12 @@ public static class TableEventRoutes
 {
     public static void MapTableEventRoutes(this IEndpointRouteBuilder app)
     {
-        var routeGroup = app.MapGroup("/order");
+        var routeGroup = app.MapGroup("/tablevent");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, OrderService orderService, bool withProducts = false, bool withVouchers = false) =>
+        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, EventTableServices orderService, bool withOrders = false) =>
         {
-            var command = new GetOrderCommand(id, from, to, withProducts, withVouchers);
-            var result = await orderService.GetOrdersAsync(command);
+            var command = new GetEventTableCommand(id, from, to, withOrders);
+            var result = await orderService.GetEventTablesAsync(command);
             return result switch
             {
                 SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),

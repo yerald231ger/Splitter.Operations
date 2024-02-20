@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Splitter.Operations.Infrastructure\Splitter.Operations.Infrastructure.csproj" />
     <ProjectReference Include="..\Splitter.Operations.Constants\Splitter.Operations.Constants.csproj" />
     <ProjectReference Include="..\Splitter.Operations.Interface\Splitter.Operations.Interface.csproj" />
+    <ProjectReference Include="..\Splitter.Operations.Specification\Splitter.Operations.Specification.csproj" />
   </ItemGroup>
 
 </Project>

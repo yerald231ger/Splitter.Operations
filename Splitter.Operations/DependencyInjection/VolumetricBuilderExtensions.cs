@@ -8,6 +8,8 @@ public static class VolumetricBuilderExtensions
     {
         services.AddTransient<EventTableServices>();
         services.AddTransient<OrderService>();
+        services.AddTransient<ProductService>();
+        services.AddTransient<VoucherService>();
         return new SplitterOperationsBuilder(services);
     }
 

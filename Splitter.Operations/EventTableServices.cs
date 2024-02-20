@@ -3,6 +3,7 @@ using Splitter.Operations.Constants;
 using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
+using Splitter.Operations.Specification;
 
 namespace Splitter.Operations;
 
@@ -17,7 +18,7 @@ public class EventTableServices(
     private readonly ILogger<EventTableServices> _logger = logger;
     private readonly ISptInterface _sptInterface = sptInterface;
 
-    public async Task<SptResult> GetTableEventsAsync(GetEventTableCommand command)
+    public async Task<SptResult> GetEventTablesAsync(GetEventTableCommand command)
     {
         try
         {
@@ -28,7 +29,8 @@ public class EventTableServices(
                 return _sptInterface.CompleteGet(command.CommandId, eventTable != null ? [eventTable] : new List<EventTable>());
             }
 
-            var result = (IEnumerable<EventTable>)await evenTableRepository.Filter(null);
+            var specification = new GetByRangeDateEspecification<EventTable>(command.From, command.To, x => x.CreatedAt);
+            var result = (IEnumerable<EventTable>)await evenTableRepository.Filter(specification.IsSatisfiedBy);
             return _sptInterface.CompleteGet(command.CommandId, result);
         }
         catch (Exception e)

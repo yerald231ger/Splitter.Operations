@@ -1,6 +1,7 @@
 ﻿using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
+using Splitter.Operations.Specification;
 
 namespace Splitter.Operations;
 
@@ -20,7 +21,8 @@ public class VoucherService(IVoucherRepository voucherRepository, ISptInterface 
                 return _sptInterface.CompleteGet(command.CommandId, voucher != null ? [voucher] : new List<Voucher>());
             }
 
-            var result = (IEnumerable<Voucher>)await _voucherRepository.Filter(null);
+            var specification = new GetByRangeDateEspecification<Voucher>(command.From, command.To, x => x.CreatedAt);
+            var result = (IEnumerable<Voucher>)await _voucherRepository.Filter(specification.IsSatisfiedBy);
             return _sptInterface.CompleteGet(command.CommandId, result);
         }
         catch (System.Exception)

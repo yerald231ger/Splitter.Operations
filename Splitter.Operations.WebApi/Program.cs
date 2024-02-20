@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEventTableService()
     .AddData()
-        .AddSqlServer(builder.Configuration);
+        .AddInMemory();
 
 builder.Services.AddLogging(builder => builder.AddConsole());
 
@@ -45,5 +45,5 @@ app.MapOrderRoutes();
 app.MapProductRoutes();
 app.MapVoucherRoutes();
 app.MapTableEventRoutes();
-app.MapGet("/", () => "Hello World, Gerardo..!" );
+app.MapGet("/", () => "Hello World, Gerardo..!");
 app.Run();

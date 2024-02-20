@@ -1,4 +1,6 @@
-﻿namespace Splitter.Operations.Infrastructure;
+﻿using System.Linq.Expressions;
+
+namespace Splitter.Operations.Infrastructure;
 
 public interface IRepository<TEntity,Tkey> where TEntity : class
 {   
@@ -7,4 +9,6 @@ public interface IRepository<TEntity,Tkey> where TEntity : class
     Task<TEntity> AddAsync(TEntity entity);
     Task<int> UpdateAsync(TEntity entity);
     Task<int> DeleteAsync(TEntity entity);
+    Task<TEntity?> Filter(Expression<Func<TEntity, bool>> predicate);
+
 }

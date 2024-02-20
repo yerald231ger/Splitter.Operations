@@ -9,7 +9,8 @@ public class OrderRepository(SplitterDbContext dbContext)
 {
     public async Task<List<Order>> Filter(DateTime? from, DateTime? to, bool withProducts, bool withVouchers)
     {
-        var query = dbContext.Orders.AsQueryable();
+        var query = dbContext.Orders
+        .AsQueryable();
         
         if (from.HasValue)
             query = query.Where(x => x.CreatedAt >= from);

@@ -8,12 +8,35 @@ namespace Splitter.Operations;
 
 public class EventTableServices(
     ILogger<EventTableServices> logger,
-    IEventTableUnitOfWork eventTableRepository,
+    IEventTableUnitOfWork eventTableUnitOfWork,
+    IEventTableRepository eventTableRepository,
     ISptInterface sptInterface)
 {
-    private readonly IEventTableUnitOfWork evenTableUnitOfWork = eventTableRepository;
+    private readonly IEventTableUnitOfWork evenTableUnitOfWork = eventTableUnitOfWork;
+    private readonly IEventTableRepository evenTableRepository = eventTableRepository;
     private readonly ILogger<EventTableServices> _logger = logger;
     private readonly ISptInterface _sptInterface = sptInterface;
+
+    public async Task<SptResult> GetTableEventsAsync(GetEventTableCommand command)
+    {
+        try
+        {
+            _logger.LogInformation("Getting Event Table");
+            if (command.EventTableId != null && command.EventTableId != Guid.Empty)
+            {
+                var eventTable = await evenTableRepository.GetByIdAsync(command.EventTableId.Value);
+                return _sptInterface.CompleteGet(command.CommandId, eventTable != null ? [eventTable] : new List<EventTable>());
+            }
+
+            var result = (IEnumerable<EventTable>)await evenTableRepository.Filter(null);
+            return _sptInterface.CompleteGet(command.CommandId, result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting event table");
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+        }
+    }
 
     public async Task<SptResult> CreateEvent(CreateEventTableCommand command)
     {

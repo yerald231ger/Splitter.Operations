@@ -12,14 +12,21 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
 
     public async Task<SptResult> GetOrdersAsync(GetOrderCommand command)
     {
-
-        if (command.OrderId != null && command.OrderId != Guid.Empty)
+        try
         {
-            var order = await _orderRepository.GetByIdAsync(command.OrderId.Value);
-            return _sptInterface.CompleteGet(command.CommandId, order != null ? [order] : new List<Order>());
+            if (command.OrderId != null && command.OrderId != Guid.Empty)
+            {
+                var order = await _orderRepository.GetByIdAsync(command.OrderId.Value);
+                return _sptInterface.CompleteGet(command.CommandId, order != null ? [order] : new List<Order>());
+            }
+    
+            var result = (IEnumerable<Order>)await _orderRepository.Filter(command.From, command.To, command.WithProducts, command.WithVouchers);
+            return _sptInterface.CompleteGet(command.CommandId, result);
         }
-
-        var result = (IEnumerable<Order>)await _orderRepository.Filter(command.From, command.To, command.WithProducts, command.WithVouchers);
-        return _sptInterface.CompleteGet(command.CommandId, result);
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
     }
 }

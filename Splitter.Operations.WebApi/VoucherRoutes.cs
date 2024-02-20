@@ -5,9 +5,9 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;
 
-public static class OrderRoutes
+public static class VoucherRoutes
 {
-    public static void MapOrderRoutes(this IEndpointRouteBuilder app)
+    public static void MapVoucherRoutes(this IEndpointRouteBuilder app)
     {
         var routeGroup = app.MapGroup("/order");
 

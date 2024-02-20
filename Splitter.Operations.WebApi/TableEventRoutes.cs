@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Splitter.Operations.Constants;
+﻿using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;
 
-public static class OrderRoutes
+public static class TableEventRoutes
 {
-    public static void MapOrderRoutes(this IEndpointRouteBuilder app)
+    public static void MapTableEventRoutes(this IEndpointRouteBuilder app)
     {
         var routeGroup = app.MapGroup("/order");
 

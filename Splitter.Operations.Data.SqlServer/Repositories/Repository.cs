@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Splitter.Operations.Infrastructure;
 
 namespace Splitter.Operations.Data.SqlServer;
@@ -37,5 +38,10 @@ public abstract class Repository<TEntity, TKey>(DbContext dbContext) : IReposito
     {
         Context.Entry(entity).State = EntityState.Modified;
         return await Context.SaveChangesAsync();
+    }
+
+    public Task<TEntity?> Filter(Expression<Func<TEntity, bool>> predicate)
+    {
+        throw new NotImplementedException();
     }
 }

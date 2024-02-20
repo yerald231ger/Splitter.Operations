@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using Splitter.Operations.Constants;
 
 namespace Splitter.Operations.Models;
@@ -17,6 +18,9 @@ public class Order
     public virtual EventTable? EventTable { get; set; }
     public virtual List<Product>? Products { get; set; } = [];
     public virtual List<Voucher>? Vouchers { get; set; } = [];
+
+    public static Expression<Func<Order, bool>> FilterFromTo(DateTime from, DateTime to)
+         => order => order.CreatedAt >= from && order.CreatedAt <= to;
 
     public static Order Create(Guid eventTableId) => new()
     {

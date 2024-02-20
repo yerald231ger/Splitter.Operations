@@ -1,20 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Splitter.Operations.Constants;
+﻿using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;
 
-public static class OrderRoutes
+public static class ProductRoutes
 {
-    public static void MapOrderRoutes(this IEndpointRouteBuilder app)
+    public static void MapProductRoutes(this IEndpointRouteBuilder app)
     {
         var routeGroup = app.MapGroup("/order");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, OrderService orderService, bool withProducts = false, bool withVouchers = false) =>
+        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, ProductService productService) =>
         {
-            var command = new GetOrderCommand(id, from, to, withProducts, withVouchers);
-            var result = await orderService.GetOrdersAsync(command);
+            var command = new GetProductCommand(id);
+            var result = await productService.GetProductsAsync(command);
             return result switch
             {
                 SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),

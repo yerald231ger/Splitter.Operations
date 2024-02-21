@@ -7,7 +7,6 @@ public class GetByRangeDateEspecification<TEntity>(DateTime? from, DateTime? to,
     private readonly DateTime? _from = from;
     private readonly DateTime? _to = to;
     private readonly Func<TEntity, DateTime> _dateSelector = dateSelector;
-
     public override bool IsSatisfiedBy(TEntity entity)
     {
 

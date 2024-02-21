@@ -10,13 +10,14 @@ public static class TableEventRoutes
     {
         var routeGroup = app.MapGroup("/tablevent");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, EventTableServices orderService, bool withOrders = false) =>
+        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, Guid? commandId, EventTableServices orderService, bool withOrders = false) =>
         {
             var command = new GetEventTableCommand(id, from, to, withOrders);
+            if(commandId.HasValue) command.CommandId = commandId.Value;
             var result = await orderService.GetEventTablesAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
+                SptGetManyCompletion<EventTable> r => Results.Ok(r.Items.Select(x => x.ToDto(command.CommandId)).ToList()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };

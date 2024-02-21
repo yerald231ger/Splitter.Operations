@@ -21,7 +21,7 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
             }
             
             var specification = new GetByRangeDateEspecification<Order>(command.From, command.To, x => x.CreatedAt);
-            var result = await _orderRepository.Filter(specification.IsSatisfiedBy);
+            var result = (IEnumerable<Order>)await _orderRepository.Filter(specification.IsSatisfiedBy);
             return _sptInterface.CompleteGet(command.CommandId, result);
         }
         catch (System.Exception)

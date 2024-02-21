@@ -14,6 +14,9 @@ public static class ToDtoExtension
         eventTable.Created.Name,
         eventTable.Created.CreatedAt);
 
+    public static EventTableDto ToDto(this EventTable eventTable, Guid commandId)
+    => new(commandId, eventTable.Id, eventTable.Name, eventTable.CreatedAt);
+
     public static OrderDto ToDto(this SptCreateCompletion<Order> order)
     => new(
         order.CommandId,

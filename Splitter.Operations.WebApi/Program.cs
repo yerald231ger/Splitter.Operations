@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddEventTableService()
     .AddData()
-        .AddSqlServer(builder.Configuration);
+        .AddInMemory();
 
 builder.Services.AddLogging(builder => builder.AddConsole());
 

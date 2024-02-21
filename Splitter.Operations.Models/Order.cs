@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using System.Runtime.InteropServices;
 using Splitter.Operations.Constants;
 
 namespace Splitter.Operations.Models;

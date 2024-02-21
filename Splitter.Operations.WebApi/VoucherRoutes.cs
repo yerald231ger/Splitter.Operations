@@ -16,7 +16,7 @@ public static class VoucherRoutes
             var result = await orderService.GetvouchersAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
+                SptGetManyCompletion<Voucher> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };

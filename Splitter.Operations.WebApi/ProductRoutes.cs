@@ -16,7 +16,7 @@ public static class ProductRoutes
             var result = await productService.GetProductsAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
+                SptGetManyCompletion<Product> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };

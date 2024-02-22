@@ -1,6 +1,7 @@
 ﻿namespace Splitter.Operations.Interface;
 
-public class GetEventTableCommand(Guid? orderId, DateTime? from, DateTime? to, bool withOrders = false) : SptCommand
+public class GetEventTableCommand(Guid? commandId,Guid? orderId, DateTime? from, DateTime? to, bool withOrders = false)
+ : SptCommand(commandId)
 {
     public Guid? EventTableId { get; set; } = orderId;
     public DateTime? From { get; set; } = from;

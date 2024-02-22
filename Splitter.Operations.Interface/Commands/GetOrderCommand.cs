@@ -1,6 +1,15 @@
-﻿namespace Splitter.Operations.Interface;
+﻿using System.ComponentModel.Design;
 
-public class GetOrderCommand(Guid? orderId, DateTime? from, DateTime? to, bool withProducts, bool withVouchers) : SptCommand
+namespace Splitter.Operations.Interface;
+
+public class GetOrderCommand(
+    Guid? commandId,
+    Guid? orderId,
+    DateTime? from,
+    DateTime? to,
+    bool withProducts,
+    bool withVouchers)
+     : SptCommand(commandId)
 {
     public Guid? OrderId { get; set; } = orderId;
     public DateTime? From { get; set; } = from;

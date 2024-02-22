@@ -5,12 +5,12 @@ namespace Splitter.Operations.WebApi;
 
 #pragma warning disable IDE1006 // Naming Styles
 public record class OrderDto(
-    Guid commandId,
+    Guid? commandId,
     Guid id,
     decimal total,
     decimal totalPaid,
-    List<ProductVODto> products,
-    List<VoucherVODto> vouchers)
+    List<ProductDto> products,
+    List<VoucherDto> vouchers)
     : ReponseDto(commandId)
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]

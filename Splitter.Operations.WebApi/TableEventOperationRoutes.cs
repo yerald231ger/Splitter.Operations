@@ -95,7 +95,7 @@ public static class TableEventOperationRoutes
                 _ => Results.StatusCode(500)
             };
         })
-        .Produces(201, responseType: typeof(VoucherVODto))
+        .Produces(201, responseType: typeof(VoucherDto))
         .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
         .Produces(404)
         .Produces(500)

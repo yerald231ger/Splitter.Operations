@@ -20,7 +20,7 @@ public abstract class Repository<TEntity, TKey>(DbContext dbContext) : IReposito
     public async Task<int> DeleteAsync(TEntity entity)
     {
         Context.Set<TEntity>().Remove(entity);
-        return await Task.FromResult(1);
+        return await Context.SaveChangesAsync();
     }
 
     public async Task<List<TEntity>> GetAsync()

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Collections;
+using Microsoft.Extensions.Logging;
 using Splitter.Operations.Constants;
 using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
@@ -26,7 +27,7 @@ public class EventTableServices(
             if (command.EventTableId != null && command.EventTableId != Guid.Empty)
             {
                 var eventTable = await evenTableRepository.GetByIdAsync(command.EventTableId.Value);
-                return _sptInterface.CompleteGet(command.CommandId, eventTable != null ? [eventTable] : new List<EventTable>());
+                return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<EventTable>)(eventTable is null ? [] : [eventTable]));
             }
 
             var specification = new GetByRangeDateEspecification<EventTable>(command.From, command.To, x => x.CreatedAt);
@@ -166,7 +167,7 @@ public class EventTableServices(
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
 
             if (order.IsPaid())
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderAlreadyPaid, SptRejectCodes.OrderAlreadyPaid.GetDescription());  
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderAlreadyPaid, SptRejectCodes.OrderAlreadyPaid.GetDescription());
 
             if (command.Tip is < 0 or > 100)
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidTip, SptRejectCodes.InvalidTip.GetDescription());

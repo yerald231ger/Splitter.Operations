@@ -10,21 +10,35 @@ public static class ProductRoutes
     {
         var routeGroup = app.MapGroup("/product");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, ProductService productService) =>
+        routeGroup.MapGet("/", async (Guid? commandId, Guid? id, ProductService productService) =>
         {
-            var command = new GetProductCommand(id);
+            var command = new GetProductCommand(commandId, id);
             var result = await productService.GetProductsAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Product> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
+                SptGetManyCompletion<Product> r => Results.Ok(r.ToDto()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
-        .Produces<List<OrderDto>>()
+        .Produces<GetProductsDto>()
         .Produces<SptRejection<SptRejectCodes>>(400)
         .WithOpenApi();
 
+        routeGroup.MapDelete("/{id:guid}", async (Guid? commanId, Guid id, ProductService productService) =>
+        {
+            var command = new DeleteProductCommand(commanId, id);
+            var result = await productService.DeleteProductAsync(command);
+            return result switch
+            {
+                SptUpdateCompletion<Product> r => Results.NoContent(),
+                SptRejection<SptRejectCodes> r => Results.BadRequest(r),
+                _ => Results.BadRequest()
+            };
+        })
+        .Produces(204)
+        .Produces<SptRejection<SptRejectCodes>>(400)
+        .WithOpenApi();
 
     }
 }

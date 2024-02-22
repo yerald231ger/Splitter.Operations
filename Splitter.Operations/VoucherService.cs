@@ -18,7 +18,7 @@ public class VoucherService(IVoucherRepository voucherRepository, ISptInterface 
             if (command.VoucherId != null && command.VoucherId != Guid.Empty)
             {
                 var voucher = await _voucherRepository.GetByIdAsync(command.VoucherId.Value);
-                return _sptInterface.CompleteGet(command.CommandId, voucher != null ? [voucher] : new List<Voucher>());
+                return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<Voucher>)(voucher is null ? [] : [voucher]));
             }
 
             var specification = new GetByRangeDateEspecification<Voucher>(command.From, command.To, x => x.CreatedAt);

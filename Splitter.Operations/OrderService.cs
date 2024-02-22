@@ -17,7 +17,7 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
             if (command.OrderId != null && command.OrderId != Guid.Empty)
             {
                 var order = await _orderRepository.GetByIdAsync(command.OrderId.Value);
-                return _sptInterface.CompleteGet(command.CommandId, order != null ? [order] : new List<Order>());
+                return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<Order>)(order is null ? [] : [order]));
             }
             
             var specification = new GetByRangeDateEspecification<Order>(command.From, command.To, x => x.CreatedAt);

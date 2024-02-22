@@ -10,18 +10,18 @@ public static class VoucherRoutes
     {
         var routeGroup = app.MapGroup("/voucher");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, VoucherService orderService, bool withProducts = false, bool withVouchers = false) =>
+        routeGroup.MapGet("/", async (Guid? commandId, Guid? id, DateTime? from, DateTime? to, VoucherService orderService, bool withProducts = false, bool withVouchers = false) =>
         {
-            var command = new GetVoucherCommand(id, from, to);
+            var command = new GetVoucherCommand(commandId, id, from, to);
             var result = await orderService.GetvouchersAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Voucher> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
+                SptGetManyCompletion<Voucher> r => Results.Ok(r.ToDto()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
-        .Produces<List<OrderDto>>()
+        .Produces<GetVouchersDto>()
         .Produces<SptRejection<SptRejectCodes>>(400)
         .WithOpenApi();
 

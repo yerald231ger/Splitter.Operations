@@ -30,7 +30,13 @@ public enum SptRejectCodes
     RepositoryError = 8,
 
     [Description("From date cannot be greater than To date")]
-    InvalidSearchRange = 9
+    InvalidSearchRange = 9,
+
+    [Description("Resource not found")]
+    NotFound = 10,
+
+    [Description("Invalid Resource Identifier")]
+    InvalidResourceIdentifier = 11
 }
 
 public static class SptRejectCodesExtensions

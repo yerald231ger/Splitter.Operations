@@ -7,4 +7,6 @@ public abstract class SptCommand
     public SptCommand() => CommandId = Guid.NewGuid();
 
     public SptCommand(Guid commandId) => CommandId = commandId;
+
+    public SptCommand(Guid? commandId) => CommandId = commandId ?? Guid.NewGuid();
 }

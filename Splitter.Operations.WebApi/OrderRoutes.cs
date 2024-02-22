@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Splitter.Operations.Constants;
+﻿using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -11,18 +10,18 @@ public static class OrderRoutes
     {
         var routeGroup = app.MapGroup("/order");
 
-        routeGroup.MapGet("/", async (Guid? id, DateTime? from, DateTime? to, OrderService orderService, bool withProducts = false, bool withVouchers = false) =>
+        routeGroup.MapGet("/", async (Guid? commandId, Guid? id, DateTime? from, DateTime? to, OrderService orderService, bool withProducts = false, bool withVouchers = false) =>
         {
-            var command = new GetOrderCommand(id, from, to, withProducts, withVouchers);
+            var command = new GetOrderCommand(commandId, id, from, to, withProducts, withVouchers);
             var result = await orderService.GetOrdersAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Order> r => Results.Ok(r.Items.Select(x => x.ToDto()).ToList()),
+                SptGetManyCompletion<Order> r => Results.Ok(r.ToDto()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
-        .Produces<List<OrderDto>>()
+        .Produces<GetOrdersDto>()
         .Produces<SptRejection<SptRejectCodes>>(400)
         .WithOpenApi();
 

@@ -70,7 +70,7 @@ public class Order
     public void RemoveProduct(Product product)
     {
         SumPrice(-product.Price);
-        Products!.Add(product);
+        Products!.Remove(product);
     }
 
     public decimal SummAllVouchers() => Vouchers?.Sum(voucher => voucher.Total) ?? 0;

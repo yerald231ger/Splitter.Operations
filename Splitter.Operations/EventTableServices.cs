@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Splitter.Operations.Constants;
 using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
@@ -14,8 +13,8 @@ public class EventTableServices(
     IEventTableRepository eventTableRepository,
     ISptInterface sptInterface)
 {
-    private readonly IEventTableUnitOfWork evenTableUnitOfWork = eventTableUnitOfWork;
-    private readonly IEventTableRepository evenTableRepository = eventTableRepository;
+    private readonly IEventTableUnitOfWork _evenTableUnitOfWork = eventTableUnitOfWork;
+    private readonly IEventTableRepository _evenTableRepository = eventTableRepository;
     private readonly ILogger<EventTableServices> _logger = logger;
     private readonly ISptInterface _sptInterface = sptInterface;
 
@@ -26,12 +25,22 @@ public class EventTableServices(
             _logger.LogInformation("Getting Event Table");
             if (command.EventTableId != null && command.EventTableId != Guid.Empty)
             {
-                var eventTable = await evenTableRepository.GetByIdAsync(command.EventTableId.Value);
+                var eventTable = await _evenTableRepository.GetByIdAsync(command.EventTableId.Value);
+
+                if (eventTable != null)
+                {
+                    if (command.WithOrders)
+                    {
+                        var order = await _evenTableUnitOfWork.GetOrder(eventTable.Id);
+                        eventTable.Order = order;
+                    }
+                }
+
                 return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<EventTable>)(eventTable is null ? [] : [eventTable]));
             }
 
             var specification = new GetByRangeDateEspecification<EventTable>(command.From, command.To, x => x.CreatedAt);
-            var result = (IEnumerable<EventTable>)await evenTableRepository.Filter(specification.IsSatisfiedBy);
+            var result = (IEnumerable<EventTable>)await _evenTableRepository.Filter(specification.IsSatisfiedBy);
             return _sptInterface.CompleteGet(command.CommandId, result);
         }
         catch (Exception e)
@@ -49,7 +58,7 @@ public class EventTableServices(
             if (string.IsNullOrWhiteSpace(command.Name))
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidEventTableName, SptRejectCodes.InvalidEventTableName.GetDescription());
 
-            var evenTTable = await evenTableUnitOfWork.CreateEventTableAsync(EventTable.Create(command.Name));
+            var evenTTable = await _evenTableUnitOfWork.CreateEventTableAsync(EventTable.Create(command.Name));
             return _sptInterface.CompleteCreate(command.CommandId, evenTTable);
         }
         catch (Exception e)
@@ -65,7 +74,7 @@ public class EventTableServices(
         {
             _logger.LogInformation("Ordering Product");
 
-            var eventTable = await evenTableUnitOfWork.GetEventTable(command.EventTableId);
+            var eventTable = await _evenTableUnitOfWork.GetEventTable(command.EventTableId);
             var order = eventTable?.Order;
 
             if (eventTable is null)
@@ -87,8 +96,8 @@ public class EventTableServices(
                 eventTable.AddOrder(order);
             }
 
-            await evenTableUnitOfWork.UpdateTableEvent(eventTable);
-            await evenTableUnitOfWork.SaveChangesAsync();
+            await _evenTableUnitOfWork.UpdateTableEvent(eventTable);
+            await _evenTableUnitOfWork.SaveChangesAsync();
             return _sptInterface.CompleteCreate(command.CommandId, order);
         }
         catch (Exception e)
@@ -98,12 +107,46 @@ public class EventTableServices(
         }
     }
 
+    public async Task<SptResult> DeleteProduct(DeleteTableEventProductCommand command)
+    {
+        try
+        {
+            _logger.LogInformation("Removing Product");
+            var eventTable = await _evenTableUnitOfWork.GetEventTable(command.EventTableId);
+            var order = eventTable?.Order;
+
+            if (eventTable is null)
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.EventTableNotFound, SptRejectCodes.EventTableNotFound.GetDescription());
+
+            if (order is null)
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
+
+            if(order.Products!.Count == 0)
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderWithoutProducts, SptRejectCodes.OrderWithoutProducts.GetDescription());
+
+            var product = order.Products.FirstOrDefault(x => x.Id == command.ProductId);
+
+            if (product is null)
+                return _sptInterface.Reject(command.CommandId, SptRejectCodes.NotFound, SptRejectCodes.NotFound.GetDescription());
+
+            order.RemoveProduct(product);
+            await _evenTableUnitOfWork.UpdateOrder(order);
+            await _evenTableUnitOfWork.SaveChangesAsync();
+            return _sptInterface.CompleteUpdate(command.CommandId, order);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while removing product");
+            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+        }
+    }
+
     public async Task<SptResult> CloseOrder(UpdateOrderCommand command)
     {
         try
         {
             _logger.LogInformation("Closing Order");
-            var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
+            var order = await _evenTableUnitOfWork.GetOrder(command.EventTableId);
 
             if (order is null)
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
@@ -111,7 +154,7 @@ public class EventTableServices(
             order.Total = order.SumAllProducts();
             order.CloseOrder();
 
-            await evenTableUnitOfWork.UpdateOrder(order);
+            await _evenTableUnitOfWork.UpdateOrder(order);
 
             return _sptInterface.CompleteUpdate(command.CommandId, order);
         }
@@ -127,7 +170,7 @@ public class EventTableServices(
         try
         {
             _logger.LogInformation("Paying Order");
-            var order = await evenTableUnitOfWork.GetOrder(command.EventTableId);
+            var order = await _evenTableUnitOfWork.GetOrder(command.EventTableId);
 
             if (order is null)
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
@@ -145,8 +188,8 @@ public class EventTableServices(
             order.AddVoucher(voucher);
             order.PaidOrder();
 
-            await evenTableUnitOfWork.UpdateOrder(order);
-            await evenTableUnitOfWork.SaveChangesAsync();
+            await _evenTableUnitOfWork.UpdateOrder(order);
+            await _evenTableUnitOfWork.SaveChangesAsync();
             return _sptInterface.CompleteCreate(command.CommandId, voucher);
         }
         catch (Exception e)
@@ -161,7 +204,7 @@ public class EventTableServices(
         try
         {
             _logger.LogInformation("Paying Partial Order");
-            var order = await evenTableUnitOfWork.GetOrderWithVouchers(command.EventTableId);
+            var order = await _evenTableUnitOfWork.GetOrderWithVouchers(command.EventTableId);
 
             if (order is null)
                 return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
@@ -174,8 +217,8 @@ public class EventTableServices(
 
             var voucher = Voucher.Create(command.Amount, command.Tip);
             order.AddVoucher(voucher);
-            await evenTableUnitOfWork.UpdateOrder(order);
-            await evenTableUnitOfWork.SaveChangesAsync();
+            await _evenTableUnitOfWork.UpdateOrder(order);
+            await _evenTableUnitOfWork.SaveChangesAsync();
             return _sptInterface.CompleteCreate(command.CommandId, voucher);
         }
         catch (Exception e)

@@ -52,6 +52,26 @@ public static class TableEventOperationRoutes
         .Produces(500)
         .WithOpenApi();
 
+        routeGroup.MapDelete("/{EventTableId:guid}/order/product/{ProductId:guid}", async (Guid? commandId, Guid eventTableId, Guid productId, EventTableServices eventTableServices) =>
+        {
+            var command = new DeleteTableEventProductCommand(commandId,eventTableId, productId);
+            var result = await eventTableServices.DeleteProduct(command);
+            return result switch
+            {
+                SptUpdateCompletion<Order> r => Results.NoContent(),
+                SptRejection<SptRejectCodes> c => c.RejectionCode switch
+                {
+                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
+                    SptRejectCodes.EventTableNotFound => Results.NotFound(result),
+                    SptRejectCodes.OrderWithoutProducts => Results.NotFound(result),
+                    SptRejectCodes.NotFound => Results.NotFound(result),
+                    _ => Results.BadRequest(c)
+                }
+                ,
+                _ => Results.StatusCode(500)
+            };
+        });
+
         // Close an order
         routeGroup.MapPatch("/{EventTableId:guid}/order", async (Guid eventTableId, UpdateOrderDto dto, EventTableServices eventTableServices) =>
         {

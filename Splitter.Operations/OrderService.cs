@@ -19,7 +19,7 @@ public class OrderService(IOrderRepository orderRepository, ISptInterface sptInt
                 var order = await _orderRepository.GetByIdAsync(command.OrderId.Value);
 
                 if (order != null)
-                {
+                { 
                     if (command.WithVouchers)
                     {
                         var vouchers = await _orderRepository.GetVouchers(order.Id);

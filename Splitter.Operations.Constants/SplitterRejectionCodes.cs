@@ -36,7 +36,10 @@ public enum SptRejectCodes
     NotFound = 10,
 
     [Description("Invalid Resource Identifier")]
-    InvalidResourceIdentifier = 11
+    InvalidResourceIdentifier = 11,
+
+    [Description("Order without products")]
+    OrderWithoutProducts = 12
 }
 
 public static class SptRejectCodesExtensions

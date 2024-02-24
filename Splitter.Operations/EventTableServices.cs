@@ -112,7 +112,7 @@ public class EventTableServices(
         try
         {
             _logger.LogInformation("Removing Product");
-            var eventTable = await _evenTableUnitOfWork.GetEventTable(command.EventTableId);
+            var eventTable = await _evenTableUnitOfWork.GetEventTable(command.TableEventId);
             var order = eventTable?.Order;
 
             if (eventTable is null)

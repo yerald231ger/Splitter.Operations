@@ -2,8 +2,8 @@
 
 namespace Splitter.Operations.Interface;
 
-public class UpdateOrderCommand(Guid commandId, Guid eventTableId, OrderStatus status) : SptCommand(commandId)
+public class UpdateOrderCommand(Guid commandId, Guid commensalityId, OrderStatus status) : SptCommand(commandId)
 {
-    public Guid EventTableId { get; set; } = eventTableId;
+    public Guid CommensalityId { get; set; } = commensalityId;
     public OrderStatus Status { get; set; } = status;
 }

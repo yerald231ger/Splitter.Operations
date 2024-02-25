@@ -5,15 +5,16 @@ namespace Splitter.Operations.WebApi;
 
 public static class ToDtoExtension
 {
-    public static EventTableDto ToDto(this SptCreateCompletion<EventTable> eventTable)
+    public static GetCommensalityDto ToDto(this SptCreateCompletion<Commensality> commensality)
     => new(
-        eventTable.CommandId,
-        eventTable.Created!.Id,
-        eventTable.Created.Name,
-        eventTable.Created.CreatedAt);
+        commensality.CommandId,
+        commensality.Created!.Id,
+        commensality.Created.Name,
+        commensality.Created.CreatedAt,
+        null);
 
-    public static EventTableDto ToDto(this EventTable eventTable, Guid commandId)
-    => new(commandId, eventTable.Id, eventTable.Name, eventTable.CreatedAt);
+    public static GetCommensalityDto ToDto(this Commensality commensality, Guid commandId)
+    => new(commandId, commensality.Id, commensality.Name, commensality.CreatedAt, null);
 
     public static OrderDto ToDto(this SptCreateCompletion<Order> order)
     => new(
@@ -54,16 +55,25 @@ public static class ToDtoExtension
         return new GetProductsDto(product.CommandId, productDtos);
     }
 
+    public static GetCommensalityDto ToDto(this SptGetCompletion<Commensality> result)
+    {
+        OrderDto? order = null;
+        if (result.Item!.Order != null)
+            order = new OrderDto(null, result.Item!.Order!.Id, result.Item!.Order.Total, result.Item!.Order.TotalPaid, [], []);
+        var commensalityDto = new GetCommensalityDto(result.CommandId, result.Item!.Id, result.Item.Name, result.Item.CreatedAt, order);
+        return commensalityDto;
+    }
+
     public static GetVouchersDto ToDto(this SptGetManyCompletion<Voucher> vouchers)
     {
         var voucherDtos = vouchers.Items.Select(v => new VoucherDto(null, v.Id, v.Amount, v.Total, v.Total - v.Amount, v.CreatedAt, v.OrderId));
         return new GetVouchersDto(vouchers.CommandId, voucherDtos);
     }
 
-    public static GetEventTablesDto ToDto(this SptGetManyCompletion<EventTable> eventTables)
+    public static GetCommensalitysDto ToDto(this SptGetManyCompletion<Commensality> Commensalitys)
     {
-        var eventTableDtos = eventTables.Items.Select(e => new EventTableDto(eventTables.CommandId, e.Id, e.Name, e.CreatedAt));
-        return new GetEventTablesDto(eventTables.CommandId, eventTableDtos);
+        var CommensalityDtos = Commensalitys.Items.Select(e => new GetCommensalityDto(Commensalitys.CommandId, e.Id, e.Name, e.CreatedAt, null));
+        return new GetCommensalitysDto(Commensalitys.CommandId, CommensalityDtos);
     }
 
     public static VoucherDto ToDto(this SptCreateCompletion<Voucher> voucher)

@@ -5,16 +5,16 @@ using Splitter.Operations.Models;
 namespace Splitter.Operations.Data.SqlServer;
 
 
-public class EventTableConfiguration : IEntityTypeConfiguration<EventTable>
+public class CommensalityConfiguration : IEntityTypeConfiguration<Commensality>
 {
-    public void Configure(EntityTypeBuilder<EventTable> builder)
+    public void Configure(EntityTypeBuilder<Commensality> builder)
     {
-        builder.ToTable("EventTables")
+        builder.ToTable("Commensalitys")
         .HasKey(t => t.Id);
 
         builder.HasOne(p => p.Order)
-        .WithOne(p => p.EventTable)
-        .HasForeignKey<Order>(p => p.EventTableId)
+        .WithOne(p => p.Commensality)
+        .HasForeignKey<Order>(p => p.CommensalityId)
         .IsRequired(false);
         
         builder.Property(p => p.Id);

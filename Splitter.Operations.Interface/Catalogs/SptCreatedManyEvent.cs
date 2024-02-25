@@ -1,10 +1,10 @@
 ﻿namespace Splitter.Operations.Interface;
 
-public class SptCreatedManyEvent<TModel> : SptEvent
+public class SptCreatedManyCommensality<TModel> : SptCommensality
 {
     public List<TModel> Created { get; set; }
 
-    public SptCreatedManyEvent() => Created = [];
+    public SptCreatedManyCommensality() => Created = [];
 
-    public SptCreatedManyEvent(List<TModel> model) => Created = model;
+    public SptCreatedManyCommensality(List<TModel> model) => Created = model;
 }

@@ -2,17 +2,17 @@
 
 namespace Splitter.Operations.Infrastructure;
 
-public interface IEventTableUnitOfWork
+public interface ICommensalityUnitOfWork
 {
     Task<Guid> AddProductToOrder(Guid orderId, Product product);
     Task<Order> AddTableOrder(Order order);
     Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher);
-    Task<EventTable> CreateEventTableAsync(EventTable eventTable);
-    Task<EventTable?> GetEventTable(Guid eventTableId);
-    Task<Order?> GetOrder(Guid eventTableId);
+    Task<Commensality> CreateCommensalityAsync(Commensality commensality);
+    Task<Commensality?> GetCommensality(Guid commensalityId);
+    Task<Order?> GetOrder(Guid commensalityId);
     Task<Guid> UpdateOrder(Order order);
     
     Task<int> SaveChangesAsync();
-    Task<Guid> UpdateTableEvent(EventTable eventTable);
-    Task<Order?> GetOrderWithVouchers(Guid eventTableId);
+    Task<Guid> UpdateCommensality(Commensality commensality);
+    Task<Order?> GetOrderWithVouchers(Guid commensalityId);
 }

@@ -5,11 +5,11 @@ namespace Splitter.Operations.Constants;
 
 public enum SptRejectCodes
 {
-    [Description("Invalid Event Table Name. Must not be empty")]
-    InvalidEventTableName = 1,
+    [Description("Invalid Commensality Name. Must not be empty")]
+    InvalidCommensalityName = 1,
 
-    [Description("Event Table Not Found. Check the Event Table Id and try again")]
-    EventTableNotFound = 2,
+    [Description("Commensality Not Found. Check the Commensality Id and try again")]
+    CommensalityNotFound = 2,
 
     [Description("Invalid Product Name. Must not be empty")]
     InvalidProductName = 3,

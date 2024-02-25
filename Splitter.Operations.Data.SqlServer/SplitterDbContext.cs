@@ -5,7 +5,7 @@ namespace Splitter.Operations.Data.SqlServer;
 
 public class SplitterDbContext(DbContextOptions<SplitterDbContext> options) : DbContext(options)
 {
-    public DbSet<EventTable> EventTables { get; set; }
+    public DbSet<Commensality> Commensalitys { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }

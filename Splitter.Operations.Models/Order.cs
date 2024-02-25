@@ -13,17 +13,17 @@ public class Order
     public DateTime PaidAt { get; set; }
     public OrderStatus Status { get; private set; }
 
-    public Guid EventTableId { get; set; }
-    public virtual EventTable? EventTable { get; set; }
+    public Guid CommensalityId { get; set; }
+    public virtual Commensality? Commensality { get; set; }
     public virtual List<Product>? Products { get; set; } = [];
     public virtual List<Voucher>? Vouchers { get; set; } = [];
 
     public static Expression<Func<Order, bool>> FilterFromTo(DateTime from, DateTime to)
          => order => order.CreatedAt >= from && order.CreatedAt <= to;
 
-    public static Order Create(Guid eventTableId) => new()
+    public static Order Create(Guid commensalityId) => new()
     {
-        EventTableId = eventTableId,
+        CommensalityId = commensalityId,
         CreatedAt = DateTime.Now,
         Status = OrderStatus.Open
     };

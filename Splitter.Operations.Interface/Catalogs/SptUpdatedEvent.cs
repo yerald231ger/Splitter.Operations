@@ -1,14 +1,14 @@
 ﻿namespace Splitter.Operations.Interface;
-public class SptUpdatedEvent<TModel> : SptEvent
+public class SptUpdatedCommensality<TModel> : SptCommensality
 {
     public TModel? Old { get; set; }
     public TModel? New { get; set; }
 
-    public SptUpdatedEvent()
+    public SptUpdatedCommensality()
     {
     }
 
-    public SptUpdatedEvent(TModel old, TModel @new)
+    public SptUpdatedCommensality(TModel old, TModel @new)
     {
         Old = old;
         New = @new;

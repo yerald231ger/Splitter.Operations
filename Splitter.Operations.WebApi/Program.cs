@@ -9,7 +9,7 @@ builder.Services.AddCommandBuilder();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddEventTableService()
+builder.Services.AddCommensalityService()
     .AddData()
         .AddInMemory();
 
@@ -40,10 +40,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("SplitterFront");
-app.MapEvenTableOperationsRoute();
+app.MapCommensalityOperationsRoute();
+app.MapCommensalityRoutes();
 app.MapOrderRoutes();
 app.MapProductRoutes();
 app.MapVoucherRoutes();
-app.MapTableEventRoutes();
 app.MapGet("/", () => "Hello World, Gerardo..!");
 app.Run();

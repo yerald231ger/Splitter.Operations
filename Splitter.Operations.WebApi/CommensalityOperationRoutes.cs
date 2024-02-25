@@ -4,35 +4,35 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;
 
-public static class TableEventOperationRoutes
+public static class CommensalityOperationRoutes
 {
-    public static void MapEvenTableOperationsRoute(this IEndpointRouteBuilder app)
+    public static void MapCommensalityOperationsRoute(this IEndpointRouteBuilder app)
     {
-        var routeGroup = app.MapGroup("/tableevent");
+        var routeGroup = app.MapGroup("/commensality");
 
-        // Create a new event table
-        routeGroup.MapPost("/", async (CreateEventTableCommand command, EventTableServices eventTableServices) =>
+        // Create a new Commensality
+        routeGroup.MapPost("/", async (CreateCommensalityCommand command, CommensalityServices CommensalityServices) =>
         {
-            var result = await eventTableServices.CreateEvent(command);
+            var result = await CommensalityServices.CreateCommensality(command);
 
             return result switch
             {
-                SptCreateCompletion<EventTable> r => Results.Created($"/{r.Created!.Id}", r.ToDto()),
+                SptCreateCompletion<Commensality> r => Results.Created($"/{r.Created!.Id}", r.ToDto()),
                 SptRejection<SptRejectCodes> => Results.BadRequest(result),
                 _ => Results.StatusCode(500)
             };
 
         })
-        .Produces(201, responseType: typeof(EventTableDto))
+        .Produces(201, responseType: typeof(GetCommensalityDto))
         .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
         .Produces(500)
         .WithOpenApi();
 
         // Add a product to an order
-        routeGroup.MapPost("/{EventTableId:guid}/order/product", async (Guid eventTableId, CreateProductDto dto, EventTableServices eventTableServices) =>
+        routeGroup.MapPost("/{CommensalityId:guid}/order/product", async (Guid commensalityId, CreateProductDto dto, CommensalityServices CommensalityServices) =>
         {
-            var command = new CreateProductCommand(dto.CommandId, eventTableId, dto.ProductName, dto.ProductPrice);
-            var result = await eventTableServices.OrderProduct(command);
+            var command = new CreateProductCommand(dto.CommandId, commensalityId, dto.ProductName, dto.ProductPrice);
+            var result = await CommensalityServices.OrderProduct(command);
 
             return result switch
             {
@@ -52,17 +52,17 @@ public static class TableEventOperationRoutes
         .Produces(500)
         .WithOpenApi();
 
-        routeGroup.MapDelete("/{EventTableId:guid}/order/product/{ProductId:guid}", async (Guid? commandId, Guid eventTableId, Guid productId, EventTableServices eventTableServices) =>
+        routeGroup.MapDelete("/{CommensalityId:guid}/order/product/{ProductId:guid}", async (Guid? commandId, Guid commensalityId, Guid productId, CommensalityServices CommensalityServices) =>
         {
-            var command = new DeleteTableEventProductCommand(commandId,eventTableId, productId);
-            var result = await eventTableServices.DeleteProduct(command);
+            var command = new DeleteCommensalityProductCommand(commandId,commensalityId, productId);
+            var result = await CommensalityServices.DeleteProduct(command);
             return result switch
             {
                 SptUpdateCompletion<Order> r => Results.NoContent(),
                 SptRejection<SptRejectCodes> c => c.RejectionCode switch
                 {
                     SptRejectCodes.OrderNotFound => Results.NotFound(result),
-                    SptRejectCodes.EventTableNotFound => Results.NotFound(result),
+                    SptRejectCodes.CommensalityNotFound => Results.NotFound(result),
                     SptRejectCodes.OrderWithoutProducts => Results.NotFound(result),
                     SptRejectCodes.NotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
@@ -73,10 +73,10 @@ public static class TableEventOperationRoutes
         });
 
         // Close an order
-        routeGroup.MapPatch("/{EventTableId:guid}/order", async (Guid eventTableId, UpdateOrderDto dto, EventTableServices eventTableServices) =>
+        routeGroup.MapPatch("/{CommensalityId:guid}/order", async (Guid commensalityId, UpdateOrderDto dto, CommensalityServices CommensalityServices) =>
         {
-            var command = new UpdateOrderCommand(dto.CommandId, eventTableId, dto.OrderStatus);
-            var result = await eventTableServices.CloseOrder(command);
+            var command = new UpdateOrderCommand(dto.CommandId, commensalityId, dto.OrderStatus);
+            var result = await CommensalityServices.CloseOrder(command);
             return result switch
             {
                 SptUpdateCompletion<Order> r => Results.NoContent(),
@@ -96,12 +96,12 @@ public static class TableEventOperationRoutes
         .WithOpenApi();
 
         // Create a new payment to an order
-        routeGroup.MapPost("/{EventTableId:guid}/order/voucher", async (Guid eventTableId, CreateVoucherDto dto, EventTableServices eventTableServices) =>
+        routeGroup.MapPost("/{CommensalityId:guid}/order/voucher", async (Guid commensalityId, CreateVoucherDto dto, CommensalityServices CommensalityServices) =>
         {
-            var command = new CreateVoucherCommand(dto.CommandId, eventTableId, dto.Amount, dto.Tip, dto.IsPartialPayment);
+            var command = new CreateVoucherCommand(dto.CommandId, commensalityId, dto.Amount, dto.Tip, dto.IsPartialPayment);
             SptResult result = command.IsPartialPayment ?
-            await eventTableServices.PayPartialOrder(command) :
-            await eventTableServices.PayTotalOrder(command);
+            await CommensalityServices.PayPartialOrder(command) :
+            await CommensalityServices.PayTotalOrder(command);
 
             return result switch
             {

@@ -21,9 +21,9 @@ public static class ISptInterfaceCatalogsExtensions
     public static SptGetManyCompletion<TModel> CompleteGet<TModel>(this ISptInterface _, Guid commandId, IEnumerable<TModel> model) where TModel : class
         => new(commandId, model);
 
-    public static SptCreatedEvent<TModel> CreatedEvent<TModel>(this ISptInterface _, TModel model) where TModel : class
+    public static SptCreatedCommensality<TModel> CreatedCommensality<TModel>(this ISptInterface _, TModel model) where TModel : class
         => new(model);
 
-    public static SptUpdatedEvent<TModel> UpdatedEvent<TModel>(this ISptInterface _, TModel old, TModel @new) where TModel : class
+    public static SptUpdatedCommensality<TModel> UpdatedCommensality<TModel>(this ISptInterface _, TModel old, TModel @new) where TModel : class
         => new(old, @new);
 }

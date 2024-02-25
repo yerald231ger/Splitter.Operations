@@ -4,9 +4,9 @@ namespace Splitter.Operations;
 
 public static class VolumetricBuilderExtensions
 {
-    public static SplitterOperationsBuilder AddEventTableService(this IServiceCollection services)
+    public static SplitterOperationsBuilder AddCommensalityService(this IServiceCollection services)
     {
-        services.AddTransient<EventTableServices>();
+        services.AddTransient<CommensalityServices>();
         services.AddTransient<OrderService>();
         services.AddTransient<ProductService>();
         services.AddTransient<VoucherService>();

@@ -1,5 +1,5 @@
 ﻿namespace Splitter.Operations.Interface;
-public abstract class SptEvent
+public abstract class SptCommensality
 {
-    public string GetEventType() => GetType().FullName ?? string.Empty;
+    public string GetCommensalityType() => GetType().FullName ?? string.Empty;
 }

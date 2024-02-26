@@ -15,7 +15,7 @@ public class Order
 
     public Guid CommensalityId { get; set; }
     public virtual Commensality? Commensality { get; set; }
-    public virtual List<Product>? Products { get; set; } = [];
+    public virtual List<OrderProduct>? Products { get; set; } = [];
     public virtual List<Voucher>? Vouchers { get; set; } = [];
 
     public static Expression<Func<Order, bool>> FilterFromTo(DateTime from, DateTime to)
@@ -61,13 +61,13 @@ public class Order
         _ => Vouchers.Count > 0,
     };
 
-    public void AddProduct(Product product)
+    public void AddProduct(OrderProduct product)
     {
         SumPrice(product.Price);
         Products!.Add(product);
     }
     
-    public void RemoveProduct(Product product)
+    public void RemoveProduct(OrderProduct product)
     {
         SumPrice(-product.Price);
         Products!.Remove(product);

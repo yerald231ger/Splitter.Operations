@@ -24,7 +24,7 @@ public class CommensalityUnitOfWork(
         return commensality;
     }
 
-    public async Task<Guid> AddProductToOrder(Guid orderId, Product product)
+    public async Task<Guid> AddProductToOrder(Guid orderId, OrderProduct product)
     {
         product.OrderId = orderId;
         product = await _productRepository.AddAsync(product);

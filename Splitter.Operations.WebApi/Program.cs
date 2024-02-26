@@ -43,7 +43,6 @@ app.UseCors("SplitterFront");
 app.MapCommensalityOperationsRoute();
 app.MapCommensalityRoutes();
 app.MapOrderRoutes();
-app.MapProductRoutes();
 app.MapVoucherRoutes();
 app.MapGet("/", () => "Hello World, Gerardo..!");
 app.Run();

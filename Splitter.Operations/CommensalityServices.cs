@@ -87,13 +87,13 @@ public class CommensalityServices(
 
             if (commensality.HasOrder())
             {
-                var product = Product.Create(command.ProductName, command.ProductPrice);
+                var product = Models.OrderProduct.Create(command.ProductName, command.ProductPrice);
                 order!.AddProduct(product);
             }
             else
             {
                 order = Order.Create(command.CommensalityId);
-                var product = Product.Create(command.ProductName, command.ProductPrice);
+                var product = Models.OrderProduct.Create(command.ProductName, command.ProductPrice);
                 order.AddProduct(product);
                 commensality.AddOrder(order);
             }

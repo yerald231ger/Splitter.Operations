@@ -2,7 +2,7 @@
 
 namespace Splitter.Operations.Infrastructure;
 
-public interface IProductRepository : IRepository<Product, Guid>
+public interface IProductRepository : IRepository<OrderProduct, Guid>
 {
     
 }

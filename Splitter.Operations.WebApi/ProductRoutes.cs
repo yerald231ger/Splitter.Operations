@@ -16,7 +16,7 @@ public static class ProductRoutes
             var result = await productService.GetProductsAsync(command);
             return result switch
             {
-                SptGetManyCompletion<Product> r => Results.Ok(r.ToDto()),
+                SptGetManyCompletion<OrderProduct> r => Results.Ok(r.ToDto()),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
@@ -31,7 +31,7 @@ public static class ProductRoutes
             var result = await productService.DeleteProductAsync(command);
             return result switch
             {
-                SptUpdateCompletion<Product> r => Results.NoContent(),
+                SptUpdateCompletion<OrderProduct> r => Results.NoContent(),
                 SptRejection<SptRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };

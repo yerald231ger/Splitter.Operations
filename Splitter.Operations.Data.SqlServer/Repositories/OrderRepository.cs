@@ -8,7 +8,7 @@ public class OrderRepository(SplitterDbContext dbContext)
 : Repository<Order, Guid>(dbContext), IOrderRepository
 {
     private readonly SplitterDbContext _dbContext = dbContext;
-    public async Task<List<Product>?> GetProducts(Guid id)
+    public async Task<List<OrderProduct>?> GetProducts(Guid id)
     {
         return await _dbContext.Products.Where(p => p.OrderId == id).ToListAsync();
     }

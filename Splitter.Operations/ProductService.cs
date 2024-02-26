@@ -18,10 +18,10 @@ public class ProductService(IProductRepository ProductRepository, ISptInterface 
             if (command.ProductId != null && command.ProductId != Guid.Empty)
             {
                 var Product = await _productRepository.GetByIdAsync(command.ProductId.Value);
-                return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<Product>)(Product is null ? [] : [Product]));
+                return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<OrderProduct>)(Product is null ? [] : [Product]));
             }
-            var specification = new GetByNameSpecification<Product>(command.Name, x => x.Name);
-            var result = (IEnumerable<Product>)await _productRepository.Filter(specification.IsSatisfiedBy);
+            var specification = new GetByNameSpecification<OrderProduct>(command.Name, x => x.Name);
+            var result = (IEnumerable<OrderProduct>)await _productRepository.Filter(specification.IsSatisfiedBy);
             return _sptInterface.CompleteGet(command.CommandId, result);
         }
         catch (System.Exception)

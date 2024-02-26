@@ -4,11 +4,11 @@ using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Data.SqlServer;
 
-public class ProductConfiguration : IEntityTypeConfiguration<Product>
+public class ProductConfiguration : IEntityTypeConfiguration<OrderProduct>
 {
-    public void Configure(EntityTypeBuilder<Product> builder)
+    public void Configure(EntityTypeBuilder<OrderProduct> builder)
     {
-        builder.ToTable("Products")
+        builder.ToTable("OrderProducts")
         .HasKey(t => t.Id);
 
         builder.Property(p => p.Id)
@@ -16,10 +16,6 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.Property(p => p.Price)
         .HasColumnType("decimal(18, 2)");
-
-        builder.HasMany(p => p.Tags)
-        .WithMany(p => p.Products)
-        .UsingEntity(t => t.ToTable("ProductTag"));
 
     }
 }

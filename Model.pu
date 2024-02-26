@@ -1,0 +1,100 @@
+@startuml
+class Restaurant {
+{field} Guid Id
+{field} String Name
+{field} Menu[] Menus
+{field} SocialNetworks[] SocialNetworks
+{method} AddMenu()
+}
+
+class Address {
+{field} Guid Id
+{field} RestaurantId
+{field} String AddressDescription
+}
+
+class MenuLayout{
+{field} Guid Id
+{field} Guid MenuId
+{field} String Layout
+}
+
+class SnapshotMenu{
+{field} Guid Id
+{field} String Name
+{field} String Description
+{field} String Version
+{field} Product[] Products
+{field} MenuLayout MenuLayout
+}
+
+class Menu {
+{field} Guid Id
+{field} String Name
+{field} String Description
+{field} String Version
+{field} MenuLayout MenuLayout
+{field} Status
+{field} bool IsActive
+{field} Product[] Products
+{field} Cetegory[] Categories
+{field} Iamge[] Iamges
+{method} AddProduct()
+{method} AddCreate()
+{method} AsignCategoryToProduct()
+{method} AsignImageToProduct(Id Image, Id Product)
+{method} AsignImageToCategory(Id Image, Id Category)
+{method} AsignImageToMenu(Id Image, Id Menu)
+{method} CreateProduct()
+{method} CreateCategory()
+{method} RemoveProduct()
+{method} DeleteCategory()
+{method} GetLayout()
+}
+
+class SocialNetworks {
+{field} Guid Id
+{field} String Name
+{field} String Url
+{field} Image Logo
+{field} String DisplayName
+}
+
+
+class Image{
+{field} Guid Id
+{field} Url
+{field} Guid ObjectId
+{method} GetImageForObjectId(Guid Id)
+}
+
+class Category {
+{field} Guid Id
+{field} Guid RestaurantId
+{field} Guid Name
+{field} bool IsActive
+{field} Image[] Images
+}
+
+class Product {
+{field} Guid Id
+{field} String Name
+{field} String Descripcion
+{field} bool IsActive
+{field} Tag[] Tags
+{field} Image[] Images
+{field} Guids[] CategoriesIds
+}
+
+
+Restaurant "1" --* "*"Menu : contains
+Restaurant "1" --* "*"Address : contains
+Restaurant "1" --* "*"SocialNetworks : contains
+Menu "1" --* "1"MenuLayout : contains
+Menu "1" --* "*"SnapshotMenu : contains
+Menu "1" --* "*"Product : contains
+Menu"*" --* "*"Category : contains
+
+
+
+@enduml

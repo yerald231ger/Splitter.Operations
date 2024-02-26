@@ -4,7 +4,7 @@ namespace Splitter.Operations.Infrastructure;
 
 public interface ICommensalityUnitOfWork
 {
-    Task<Guid> AddProductToOrder(Guid orderId, Product product);
+    Task<Guid> AddProductToOrder(Guid orderId, OrderProduct product);
     Task<Order> AddTableOrder(Order order);
     Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher);
     Task<Commensality> CreateCommensalityAsync(Commensality commensality);

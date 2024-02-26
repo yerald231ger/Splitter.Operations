@@ -1,0 +1,73 @@
+
+
+{
+    "Menu" : {
+        "Id" : "Guid",
+        "Nombre" : "Guia",
+        "Descripcion" : "Guia",
+        "Imagenes": [
+            {
+                "Url": "",
+                "Descripcion": ""
+            }
+        ],
+        "Categorias" : [
+            {
+                "Id" : "Guid",
+                "Nombre" : "Guia",
+                "Descripcion" : "Guia",
+                "Imagenes": [
+                    {
+                        "Url": "",
+                        "Descripcion": ""
+                    }
+                ]
+            }
+        ],
+        "Productos" : [
+            {
+                "Id" : "Guid",
+                "Nombre" : "Guia",
+                "Descripcion" : "Guia",
+                "Precio" : 0.0,
+                "Imagen" : "Guia",
+                "Categoria" : "Guia",
+                "SubCategoria" : "Guia",
+                "Estado" : "Guia",
+                "Imagenes": [
+                    {
+                        "Url": "",
+                        "Descripcion": ""
+                    }
+                ],
+                "Categorias": [
+                    "Saladas, papas"
+                ]
+            },
+
+            {
+                "Id" : "Guid",
+                "Nombre" : "Guia",
+                "Descripcion" : "Guia",
+                "Precio" : 0.0,
+                "Imagen" : "Guia",
+                "Categoria" : "Guia",
+                "SubCategoria" : "Guia",
+                "Estado" : "Guia",
+                "Categorias": [
+                    "Papas"
+                ]
+            }
+        ]
+    },
+    "Layout" : {
+        "Entradas": {
+            "Ids":[ "",""],
+            "Saladas" : {
+                "Ids":[ "Guid","Guia"],
+                "Papas" : {
+                }
+            }
+        }
+    }
+}

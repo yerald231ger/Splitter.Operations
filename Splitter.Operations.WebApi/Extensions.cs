@@ -49,7 +49,7 @@ public static class ToDtoExtension
         return new GetOrdersDto(orders.CommandId, orderDTos);
     }
 
-    public static GetProductsDto ToDto(this SptGetManyCompletion<Product> product)
+    public static GetProductsDto ToDto(this SptGetManyCompletion<OrderProduct> product)
     {
         var productDtos = product.Items.Select(p => new ProductDto(p.Id, p.Name, p.Price));
         return new GetProductsDto(product.CommandId, productDtos);
@@ -86,6 +86,6 @@ public static class ToDtoExtension
         voucher.Created.CreatedAt,
         voucher.Created.OrderId);
 
-    public static ProductDto ToDto(this Product product) => new(product.Id, product.Name, product.Price);
+    public static ProductDto ToDto(this OrderProduct product) => new(product.Id, product.Name, product.Price);
     public static VoucherDto ToDto(this Voucher voucher) => new(null, voucher.Id, voucher.Amount, voucher.Total, voucher.Total - voucher.Amount, voucher.CreatedAt, voucher.OrderId);
 }

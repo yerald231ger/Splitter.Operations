@@ -18,25 +18,25 @@ public class CommensalityUnitOfWork(
 
     private readonly SplitterDbContext _context = context;
 
-    public async Task<Commensality> CreateCommensalityAsync(Commensality commensality)
+    public async Task<int> CreateCommensalityAsync(Commensality commensality)
     {
-        commensality = await _CommensalityRepository.AddAsync(commensality);
-        return commensality;
+        var result = await _CommensalityRepository.AddAsync(commensality);
+        return result;
     }
 
-    public async Task<Guid> AddProductToOrder(Guid orderId, OrderProduct product)
+    public async Task<int> AddProductToOrder(Guid orderId, OrderProduct product)
     {
         product.OrderId = orderId;
-        product = await _productRepository.AddAsync(product);
-        return product.Id;
+        var result = await _productRepository.AddAsync(product);
+        return result;
     }
 
-    public async Task<Order> AddTableOrder(Order order)
+    public async Task<int> AddTableOrder(Order order)
     {
         return await _orderRepository.AddAsync(order);
     }
 
-    public async Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher)
+    public async Task<int> AddVoucherToOrder(Guid id, Voucher voucher)
     {
         voucher.OrderId = id;
         return await _voucherRepository.AddAsync(voucher);

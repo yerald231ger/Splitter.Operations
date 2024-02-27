@@ -1,4 +1,5 @@
-﻿using Splitter.Operations.Models;
+﻿using Splitter.Extensions;
+using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Infrastructure;
 

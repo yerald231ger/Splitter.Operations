@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Splitter.Extentions.Interface.Abstractions;
 
 namespace Splitter.Operations.Interface;
 public static class IServicesCollectionExtensions

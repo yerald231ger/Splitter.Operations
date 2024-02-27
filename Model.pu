@@ -34,7 +34,6 @@ class Menu {
 {field} String Description
 {field} String Version
 {field} MenuLayout MenuLayout
-{field} Status
 {field} bool IsActive
 {field} Product[] Products
 {field} Cetegory[] Categories
@@ -81,6 +80,7 @@ class Product {
 {field} String Name
 {field} String Descripcion
 {field} bool IsActive
+{field} decimal Price
 {field} Tag[] Tags
 {field} Image[] Images
 {field} Guids[] CategoriesIds

@@ -1,4 +1,5 @@
-﻿using Splitter.Operations.Constants;
+﻿using Splitter.Extentions.Interface.Abstractions;
+using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -17,12 +18,12 @@ public static class ProductRoutes
             return result switch
             {
                 SptGetManyCompletion<OrderProduct> r => Results.Ok(r.ToDto()),
-                SptRejection<SptRejectCodes> r => Results.BadRequest(r),
+                SptRejection<CommensalityRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
         .Produces<GetProductsDto>()
-        .Produces<SptRejection<SptRejectCodes>>(400)
+        .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
 
         routeGroup.MapDelete("/{id:guid}", async (Guid? commanId, Guid id, ProductService productService) =>
@@ -32,12 +33,12 @@ public static class ProductRoutes
             return result switch
             {
                 SptUpdateCompletion<OrderProduct> r => Results.NoContent(),
-                SptRejection<SptRejectCodes> r => Results.BadRequest(r),
+                SptRejection<CommensalityRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
         .Produces(204)
-        .Produces<SptRejection<SptRejectCodes>>(400)
+        .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
 
     }

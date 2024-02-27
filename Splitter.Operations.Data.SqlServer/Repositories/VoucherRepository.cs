@@ -1,4 +1,5 @@
-﻿using Splitter.Operations.Infrastructure;
+﻿using Splitter.Extensions;
+using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Data.SqlServer;

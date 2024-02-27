@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splitter.BCMenu.Infrastructure\Splitter.BCMenu.Infrastructure.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Interface\Splitter.BCMenu.Interface.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Constants\Splitter.BCMenu.Constants.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Models\Splitter.BCMenu.Models.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

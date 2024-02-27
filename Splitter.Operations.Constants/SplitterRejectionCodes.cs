@@ -3,7 +3,7 @@ using Splitter.Operations.Constants;
 
 namespace Splitter.Operations.Constants;
 
-public enum SptRejectCodes
+public enum CommensalityRejectCodes
 {
     [Description("Invalid Commensality Name. Must not be empty")]
     InvalidCommensalityName = 1,
@@ -39,16 +39,9 @@ public enum SptRejectCodes
     InvalidResourceIdentifier = 11,
 
     [Description("Order without products")]
-    OrderWithoutProducts = 12
-}
-
-public static class SptRejectCodesExtensions
-{
-    public static string GetDescription(this SptRejectCodes code)
-    {
-        SptRejectCodes.InvalidTip.ToString();
-        var fieldInfo = code.GetType().GetField(code.ToString());
-        var attributes = (DescriptionAttribute[])fieldInfo!.GetCustomAttributes(typeof(DescriptionAttribute), false);
-        return attributes.Length > 0 ? attributes[0].Description : code.ToString();
-    }
+    OrderWithoutProducts = 12,
+    [Description("Invalid Commensality Id")]
+    InvalidCommensalityId = 13,
+    [Description("Invalid Vaoucher Id")]
+    InvalidVaoucherId = 14
 }

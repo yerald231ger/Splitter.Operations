@@ -1,4 +1,5 @@
-﻿using Splitter.Operations.Constants;
+﻿using Splitter.Extentions.Interface.Abstractions;
+using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -17,12 +18,12 @@ public static class CommensalityRoutes
             return result switch
             {
                 SptGetCompletion<Commensality> r => Results.Ok(r.ToDto()),
-                SptRejection<SptRejectCodes> r => Results.BadRequest(r),
+                SptRejection<CommensalityRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
         .Produces<GetCommensalitysDto>()
-        .Produces<SptRejection<SptRejectCodes>>(400)
+        .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
 
         routeGroup.MapGet("/", async (Guid? commandId, DateTime? from, DateTime? to, CommensalityServices commensalityService, bool withOrders = false) =>
@@ -32,12 +33,12 @@ public static class CommensalityRoutes
             return result switch
             {
                 SptGetManyCompletion<Commensality> r => Results.Ok(r.ToDto()),
-                SptRejection<SptRejectCodes> r => Results.BadRequest(r),
+                SptRejection<CommensalityRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
         .Produces<GetCommensalitysDto>()
-        .Produces<SptRejection<SptRejectCodes>>(400)
+        .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
     }
 }

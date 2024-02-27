@@ -1,4 +1,4 @@
-﻿using System.Dynamic;
+﻿using Splitter.Extensions;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Infrastructure;

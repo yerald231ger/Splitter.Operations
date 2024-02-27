@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.Design;
+﻿using Splitter.Extentions.Interface.Abstractions;
 
 namespace Splitter.Operations.Interface;
 

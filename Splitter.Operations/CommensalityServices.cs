@@ -4,6 +4,8 @@ using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 using Splitter.Operations.Specification;
+using Splitter.Extensions;
+using Splitter.Extentions.Interface.Abstractions;
 
 namespace Splitter.Operations;
 
@@ -38,7 +40,7 @@ public class CommensalityServices(
                     return _sptInterface.CompleteGet(command.CommandId, commensality!);
                 }
                 else
-                    return _sptInterface.Reject(command.CommandId, SptRejectCodes.NotFound, SptRejectCodes.NotFound.GetDescription());
+                    return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.NotFound, CommensalityRejectCodes.NotFound.GetDescription());
             }
 
             var specification = new GetByRangeDateEspecification<Commensality>(command.From, command.To, x => x.CreatedAt);
@@ -48,7 +50,7 @@ public class CommensalityServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while getting Commensality");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError, CommensalityRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -58,15 +60,19 @@ public class CommensalityServices(
         {
             _logger.LogInformation("Creating Commensality");
             if (string.IsNullOrWhiteSpace(command.Name))
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidCommensalityName, SptRejectCodes.InvalidCommensalityName.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidCommensalityName, CommensalityRejectCodes.InvalidCommensalityName.GetDescription());
 
-            var commensality = await _commensalityUnitOfWork.CreateCommensalityAsync(Commensality.Create(command.Name));
+            if (command.CommensalityId == Guid.Empty)
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidCommensalityId, CommensalityRejectCodes.InvalidCommensalityId.GetDescription());
+
+            var commensality = Commensality.Create(command.CommensalityId, command.Name);
+            var result = await _commensalityUnitOfWork.CreateCommensalityAsync(commensality);
             return _sptInterface.CompleteCreate(command.CommandId, commensality);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error while creating Commensality");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError);
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError);
         }
     }
 
@@ -80,20 +86,20 @@ public class CommensalityServices(
             var order = commensality?.Order;
 
             if (commensality is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.CommensalityNotFound, SptRejectCodes.CommensalityNotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.CommensalityNotFound, CommensalityRejectCodes.CommensalityNotFound.GetDescription());
 
             if (string.IsNullOrWhiteSpace(command.ProductName))
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidProductName, SptRejectCodes.InvalidProductName.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidProductName, CommensalityRejectCodes.InvalidProductName.GetDescription());
 
             if (commensality.HasOrder())
             {
-                var product = Models.OrderProduct.Create(command.ProductName, command.ProductPrice);
+                var product = Models.OrderProduct.Create(command.ProductId, command.ProductName, command.ProductPrice);
                 order!.AddProduct(product);
             }
             else
             {
                 order = Order.Create(command.CommensalityId);
-                var product = Models.OrderProduct.Create(command.ProductName, command.ProductPrice);
+                var product = Models.OrderProduct.Create(command.ProductId, command.ProductName, command.ProductPrice);
                 order.AddProduct(product);
                 commensality.AddOrder(order);
             }
@@ -105,7 +111,7 @@ public class CommensalityServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while ordering product");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError, CommensalityRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -118,18 +124,18 @@ public class CommensalityServices(
             var order = commensality?.Order;
 
             if (commensality is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.CommensalityNotFound, SptRejectCodes.CommensalityNotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.CommensalityNotFound, CommensalityRejectCodes.CommensalityNotFound.GetDescription());
 
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderNotFound, CommensalityRejectCodes.OrderNotFound.GetDescription());
 
             if (order.Products!.Count == 0)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderWithoutProducts, SptRejectCodes.OrderWithoutProducts.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderWithoutProducts, CommensalityRejectCodes.OrderWithoutProducts.GetDescription());
 
             var product = order.Products.FirstOrDefault(x => x.Id == command.ProductId);
 
             if (product is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.NotFound, SptRejectCodes.NotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.NotFound, CommensalityRejectCodes.NotFound.GetDescription());
 
             order.RemoveProduct(product);
             await _commensalityUnitOfWork.UpdateOrder(order);
@@ -139,7 +145,7 @@ public class CommensalityServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while removing product");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError, CommensalityRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -151,7 +157,7 @@ public class CommensalityServices(
             var order = await _commensalityUnitOfWork.GetOrder(command.CommensalityId);
 
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderNotFound, CommensalityRejectCodes.OrderNotFound.GetDescription());
 
             order.Total = order.SumAllProducts();
             order.CloseOrder();
@@ -163,7 +169,7 @@ public class CommensalityServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while closing order");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError, CommensalityRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -174,19 +180,22 @@ public class CommensalityServices(
             _logger.LogInformation("Paying Order");
             var order = await _commensalityUnitOfWork.GetOrder(command.CommensalityId);
 
+            if (command.VoucherId == Guid.Empty)
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidVaoucherId, CommensalityRejectCodes.InvalidVaoucherId.GetDescription());
+
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderNotFound, CommensalityRejectCodes.OrderNotFound.GetDescription());
 
             if (order.IsPaid())
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderAlreadyPaid, SptRejectCodes.OrderAlreadyPaid.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderAlreadyPaid, CommensalityRejectCodes.OrderAlreadyPaid.GetDescription());
 
             if (order.Total > command.Amount)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InsufficientFunds, SptRejectCodes.InsufficientFunds.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InsufficientFunds, CommensalityRejectCodes.InsufficientFunds.GetDescription());
 
             if (command.Tip is < 0 or > 100)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidTip, SptRejectCodes.InvalidTip.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidTip, CommensalityRejectCodes.InvalidTip.GetDescription());
 
-            var voucher = Voucher.Create(command.Amount, command.Tip);
+            var voucher = Voucher.Create(command.VoucherId, command.Amount, command.Tip);
             order.AddVoucher(voucher);
             order.PaidOrder();
 
@@ -197,7 +206,7 @@ public class CommensalityServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while paying order");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError, CommensalityRejectCodes.RepositoryError.GetDescription());
         }
     }
 
@@ -207,17 +216,20 @@ public class CommensalityServices(
         {
             _logger.LogInformation("Paying Partial Order");
             var order = await _commensalityUnitOfWork.GetOrderWithVouchers(command.CommensalityId);
+            
+            if (command.VoucherId == Guid.Empty)
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidVaoucherId, CommensalityRejectCodes.InvalidVaoucherId.GetDescription());
 
             if (order is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderNotFound, SptRejectCodes.OrderNotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderNotFound, CommensalityRejectCodes.OrderNotFound.GetDescription());
 
             if (order.IsPaid())
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.OrderAlreadyPaid, SptRejectCodes.OrderAlreadyPaid.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.OrderAlreadyPaid, CommensalityRejectCodes.OrderAlreadyPaid.GetDescription());
 
             if (command.Tip is < 0 or > 100)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidTip, SptRejectCodes.InvalidTip.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidTip, CommensalityRejectCodes.InvalidTip.GetDescription());
 
-            var voucher = Voucher.Create(command.Amount, command.Tip);
+            var voucher = Voucher.Create(command.VoucherId, command.Amount, command.Tip);
             order.AddVoucher(voucher);
             await _commensalityUnitOfWork.UpdateOrder(order);
             await _commensalityUnitOfWork.SaveChangesAsync();
@@ -226,7 +238,7 @@ public class CommensalityServices(
         catch (Exception e)
         {
             _logger.LogError(e, "Error while paying partial order");
-            return _sptInterface.Reject(command.CommandId, SptRejectCodes.RepositoryError, SptRejectCodes.RepositoryError.GetDescription());
+            return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.RepositoryError, CommensalityRejectCodes.RepositoryError.GetDescription());
         }
     }
 }

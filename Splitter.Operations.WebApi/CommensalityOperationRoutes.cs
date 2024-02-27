@@ -1,4 +1,5 @@
-﻿using Splitter.Operations.Constants;
+﻿using Splitter.Extentions.Interface.Abstractions;
+using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -18,28 +19,28 @@ public static class CommensalityOperationRoutes
             return result switch
             {
                 SptCreateCompletion<Commensality> r => Results.Created($"/{r.Created!.Id}", r.ToDto()),
-                SptRejection<SptRejectCodes> => Results.BadRequest(result),
+                SptRejection<CommensalityRejectCodes> => Results.BadRequest(result),
                 _ => Results.StatusCode(500)
             };
 
         })
         .Produces(201, responseType: typeof(GetCommensalityDto))
-        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
+        .Produces(400, responseType: typeof(SptRejection<CommensalityRejectCodes>))
         .Produces(500)
         .WithOpenApi();
 
         // Add a product to an order
         routeGroup.MapPost("/{CommensalityId:guid}/order/product", async (Guid commensalityId, CreateProductDto dto, CommensalityServices CommensalityServices) =>
         {
-            var command = new CreateProductCommand(dto.CommandId, commensalityId, dto.ProductName, dto.ProductPrice);
+            var command = new CreateProductCommand(dto.ProductId, dto.CommandId, commensalityId, dto.ProductName, dto.ProductPrice);
             var result = await CommensalityServices.OrderProduct(command);
 
             return result switch
             {
                 SptCreateCompletion<Order> r => Results.Created($"/order/{r.Created!.Id}", r.ToDto()),
-                SptRejection<SptRejectCodes> c => c.RejectionCode switch
+                SptRejection<CommensalityRejectCodes> c => c.RejectionCode switch
                 {
-                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
+                    CommensalityRejectCodes.OrderNotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -47,24 +48,24 @@ public static class CommensalityOperationRoutes
             };
         })
         .Produces(201, responseType: typeof(OrderDto))
-        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
+        .Produces(400, responseType: typeof(SptRejection<CommensalityRejectCodes>))
         .Produces(404)
         .Produces(500)
         .WithOpenApi();
 
         routeGroup.MapDelete("/{CommensalityId:guid}/order/product/{ProductId:guid}", async (Guid? commandId, Guid commensalityId, Guid productId, CommensalityServices CommensalityServices) =>
         {
-            var command = new DeleteCommensalityProductCommand(commandId,commensalityId, productId);
+            var command = new DeleteCommensalityProductCommand(commandId, commensalityId, productId);
             var result = await CommensalityServices.DeleteProduct(command);
             return result switch
             {
                 SptUpdateCompletion<Order> r => Results.NoContent(),
-                SptRejection<SptRejectCodes> c => c.RejectionCode switch
+                SptRejection<CommensalityRejectCodes> c => c.RejectionCode switch
                 {
-                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
-                    SptRejectCodes.CommensalityNotFound => Results.NotFound(result),
-                    SptRejectCodes.OrderWithoutProducts => Results.NotFound(result),
-                    SptRejectCodes.NotFound => Results.NotFound(result),
+                    CommensalityRejectCodes.OrderNotFound => Results.NotFound(result),
+                    CommensalityRejectCodes.CommensalityNotFound => Results.NotFound(result),
+                    CommensalityRejectCodes.OrderWithoutProducts => Results.NotFound(result),
+                    CommensalityRejectCodes.NotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -80,9 +81,9 @@ public static class CommensalityOperationRoutes
             return result switch
             {
                 SptUpdateCompletion<Order> r => Results.NoContent(),
-                SptRejection<SptRejectCodes> c => c.RejectionCode switch
+                SptRejection<CommensalityRejectCodes> c => c.RejectionCode switch
                 {
-                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
+                    CommensalityRejectCodes.OrderNotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -90,7 +91,7 @@ public static class CommensalityOperationRoutes
             };
         })
         .Produces(204)
-        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
+        .Produces(400, responseType: typeof(SptRejection<CommensalityRejectCodes>))
         .Produces(404)
         .Produces(500)
         .WithOpenApi();
@@ -98,7 +99,7 @@ public static class CommensalityOperationRoutes
         // Create a new payment to an order
         routeGroup.MapPost("/{CommensalityId:guid}/order/voucher", async (Guid commensalityId, CreateVoucherDto dto, CommensalityServices CommensalityServices) =>
         {
-            var command = new CreateVoucherCommand(dto.CommandId, commensalityId, dto.Amount, dto.Tip, dto.IsPartialPayment);
+            var command = new CreateVoucherCommand(dto.VoucherId, dto.CommandId, commensalityId, dto.Amount, dto.Tip, dto.IsPartialPayment);
             SptResult result = command.IsPartialPayment ?
             await CommensalityServices.PayPartialOrder(command) :
             await CommensalityServices.PayTotalOrder(command);
@@ -106,9 +107,9 @@ public static class CommensalityOperationRoutes
             return result switch
             {
                 SptCreateCompletion<Voucher> r => Results.Created($"/order/{r.Created!.Id}", r.ToDto()),
-                SptRejection<SptRejectCodes> c => c.RejectionCode switch
+                SptRejection<CommensalityRejectCodes> c => c.RejectionCode switch
                 {
-                    SptRejectCodes.OrderNotFound => Results.NotFound(result),
+                    CommensalityRejectCodes.OrderNotFound => Results.NotFound(result),
                     _ => Results.BadRequest(c)
                 }
                 ,
@@ -116,7 +117,7 @@ public static class CommensalityOperationRoutes
             };
         })
         .Produces(201, responseType: typeof(VoucherDto))
-        .Produces(400, responseType: typeof(SptRejection<SptRejectCodes>))
+        .Produces(400, responseType: typeof(SptRejection<CommensalityRejectCodes>))
         .Produces(404)
         .Produces(500)
         .WithOpenApi();

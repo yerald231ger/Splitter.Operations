@@ -1,4 +1,5 @@
-﻿using Splitter.Operations.Constants;
+﻿using Splitter.Extentions.Interface.Abstractions;
+using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 
@@ -17,12 +18,12 @@ public static class OrderRoutes
             return result switch
             {
                 SptGetManyCompletion<Order> r => Results.Ok(r.ToDto()),
-                SptRejection<SptRejectCodes> r => Results.BadRequest(r),
+                SptRejection<CommensalityRejectCodes> r => Results.BadRequest(r),
                 _ => Results.BadRequest()
             };
         })
         .Produces<GetOrdersDto>()
-        .Produces<SptRejection<SptRejectCodes>>(400)
+        .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
 
 

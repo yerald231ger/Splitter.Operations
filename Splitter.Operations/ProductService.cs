@@ -3,6 +3,8 @@ using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 using Splitter.Operations.Specification;
+using Splitter.Extensions;
+using Splitter.Extentions.Interface.Abstractions;
 
 namespace Splitter.Operations;
 
@@ -36,11 +38,11 @@ public class ProductService(IProductRepository ProductRepository, ISptInterface 
         try
         {
             if (command.ProductId == null || command.ProductId == Guid.Empty)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.InvalidResourceIdentifier, SptRejectCodes.NotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.InvalidResourceIdentifier, CommensalityRejectCodes.NotFound.GetDescription());
 
             var Product = await _productRepository.GetByIdAsync(command.ProductId.Value);
             if (Product is null)
-                return _sptInterface.Reject(command.CommandId, SptRejectCodes.NotFound, SptRejectCodes.NotFound.GetDescription());
+                return _sptInterface.Reject(command.CommandId, CommensalityRejectCodes.NotFound, CommensalityRejectCodes.NotFound.GetDescription());
 
             await _productRepository.DeleteAsync(Product);
             return _sptInterface.CompleteUpdate(command.CommandId, Product);

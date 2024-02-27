@@ -8,8 +8,9 @@ public class OrderProduct
     public Guid OrderId { get; set; }
     public virtual Order? Order { get; set; }
 
-    public static OrderProduct Create(string name, decimal price) => new()
+    public static OrderProduct Create(Guid id, string name, decimal price) => new()
     {
+        Id = id,
         Name = name,
         Price = price
     };

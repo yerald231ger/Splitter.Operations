@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Splitter.Extensions;
 using Splitter.Operations.Infrastructure;
 using Splitter.Operations.Models;
 

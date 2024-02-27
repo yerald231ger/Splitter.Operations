@@ -1,7 +1,10 @@
-﻿namespace Splitter.Operations.Interface;
+﻿using Splitter.Extentions.Interface.Abstractions;
 
-public class CreateProductCommand(Guid commandId, Guid commensalityId, string productName, decimal productPrice) : SptCommand(commandId)
+namespace Splitter.Operations.Interface;
+
+public class CreateProductCommand(Guid commandId, Guid commensalityId, Guid productId, string productName, decimal productPrice) : SptCommand(commandId)
 {
+    public Guid ProductId { get; set; } = productId;
     public Guid CommensalityId { get; set; } = commensalityId;
     public string ProductName { get; set; } = productName;
     public decimal ProductPrice { get; set; } = productPrice;

@@ -1,4 +1,6 @@
-﻿namespace Splitter.Operations.Interface;
+﻿using Splitter.Extentions.Interface.Abstractions;
+
+namespace Splitter.Operations.Interface;
 
 public class DeleteCommensalityProductCommand(Guid? commandId, Guid CommensalityId, Guid productId) : SptCommand(commandId)
 {

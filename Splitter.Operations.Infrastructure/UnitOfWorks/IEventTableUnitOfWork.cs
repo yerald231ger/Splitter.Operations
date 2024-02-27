@@ -1,18 +1,19 @@
-﻿using Splitter.Operations.Models;
+﻿using Splitter.Extensions;
+using Splitter.Operations.Models;
 
 namespace Splitter.Operations.Infrastructure;
 
-public interface ICommensalityUnitOfWork
+public interface ICommensalityUnitOfWork : IUnitOfWork
 {
-    Task<Guid> AddProductToOrder(Guid orderId, OrderProduct product);
-    Task<Order> AddTableOrder(Order order);
-    Task<Voucher> AddVoucherToOrder(Guid id, Voucher voucher);
-    Task<Commensality> CreateCommensalityAsync(Commensality commensality);
+    Task<int> AddProductToOrder(Guid orderId, OrderProduct product);
+    Task<int> AddTableOrder(Order order);
+    Task<int> AddVoucherToOrder(Guid id, Voucher voucher);
+    Task<int> CreateCommensalityAsync(Commensality commensality);
     Task<Commensality?> GetCommensality(Guid commensalityId);
     Task<Order?> GetOrder(Guid commensalityId);
     Task<Guid> UpdateOrder(Order order);
     
-    Task<int> SaveChangesAsync();
+
     Task<Guid> UpdateCommensality(Commensality commensality);
     Task<Order?> GetOrderWithVouchers(Guid commensalityId);
 }

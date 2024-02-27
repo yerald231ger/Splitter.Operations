@@ -11,17 +11,12 @@ public class Voucher
 
     public virtual Order? Order { get; set; }
 
-    public static Voucher Create(decimal amount, Tip tip)
+    public static Voucher Create(Guid id, decimal amount, Tip tip) => new()
     {
-        if (amount <= 0)
-            throw new ArgumentException("cannot be less than or equal to 0", nameof(amount));
-
-        return new Voucher
-        {
-            Amount = amount,
-            Tip = tip,
-            CreatedAt = DateTime.Now,
-            Total = amount + tip
-        };
-    }
+        Id = id,
+        Amount = amount,
+        Tip = tip,
+        CreatedAt = DateTime.Now,
+        Total = amount + tip
+    };
 }

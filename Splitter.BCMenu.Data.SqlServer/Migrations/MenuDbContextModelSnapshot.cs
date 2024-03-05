@@ -17,6 +17,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("Menu")
                 .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -44,7 +45,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories", "Menu");
                 });
 
             modelBuilder.Entity("Splitter.BCMenu.Models.Image", b =>
@@ -63,7 +64,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
                     b.HasIndex("ObjectId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images", "Menu");
                 });
 
             modelBuilder.Entity("Splitter.BCMenu.Models.Menu", b =>
@@ -87,7 +88,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Menus", (string)null);
+                    b.ToTable("Menus", "Menu");
                 });
 
             modelBuilder.Entity("Splitter.BCMenu.Models.MenuLayout", b =>
@@ -111,7 +112,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("Layouts", (string)null);
+                    b.ToTable("Layouts", "Menu");
                 });
 
             modelBuilder.Entity("Splitter.BCMenu.Models.Product", b =>
@@ -142,7 +143,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products", "Menu");
                 });
 
             modelBuilder.Entity("Splitter.BCMenu.Models.Category", b =>

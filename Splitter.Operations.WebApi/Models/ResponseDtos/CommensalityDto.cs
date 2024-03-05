@@ -3,10 +3,10 @@ using Splitter.Extensions;
 
 namespace Splitter.Operations.WebApi;
 
-#pragma warning disable IDE1006 // Naming Styles
-public record GetCommensalityDto(Guid? commandId, Guid id, string name, DateTime createdAt, OrderDto? order) : ReponseDto(commandId)
+public record GetCommensalityDto(Guid Id, string Name, DateTime CreatedAt) 
+: ReponseDto
 {
+
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public OrderDto? order { get; init; } = order;
+    public OrderDto? Order { get; init; }
 }
-#pragma warning restore IDE1006 // Naming Styles

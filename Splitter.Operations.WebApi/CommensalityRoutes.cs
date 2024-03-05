@@ -22,7 +22,7 @@ public static class CommensalityRoutes
                 _ => Results.BadRequest()
             };
         })
-        .Produces<GetCommensalitysDto>()
+        .Produces<GetCommensalitiesDto>()
         .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
 
@@ -37,7 +37,7 @@ public static class CommensalityRoutes
                 _ => Results.BadRequest()
             };
         })
-        .Produces<GetCommensalitysDto>()
+        .Produces<GetCommensalitiesDto>()
         .Produces<SptRejection<CommensalityRejectCodes>>(400)
         .WithOpenApi();
     }

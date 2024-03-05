@@ -11,8 +11,12 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Menu");
+
             migrationBuilder.CreateTable(
                 name: "Menus",
+                schema: "Menu",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -28,6 +32,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Categories",
+                schema: "Menu",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -42,12 +47,14 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
                     table.ForeignKey(
                         name: "FK_Categories_Menus_MenuId",
                         column: x => x.MenuId,
+                        principalSchema: "Menu",
                         principalTable: "Menus",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Layouts",
+                schema: "Menu",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -62,6 +69,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
                     table.ForeignKey(
                         name: "FK_Layouts_Menus_MenuId",
                         column: x => x.MenuId,
+                        principalSchema: "Menu",
                         principalTable: "Menus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -69,6 +77,7 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Products",
+                schema: "Menu",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -85,12 +94,14 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
                     table.ForeignKey(
                         name: "FK_Products_Menus_MenuId",
                         column: x => x.MenuId,
+                        principalSchema: "Menu",
                         principalTable: "Menus",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Images",
+                schema: "Menu",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -103,18 +114,21 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
                     table.ForeignKey(
                         name: "FK_Images_Categories_ObjectId",
                         column: x => x.ObjectId,
+                        principalSchema: "Menu",
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Images_Menus_ObjectId",
                         column: x => x.ObjectId,
+                        principalSchema: "Menu",
                         principalTable: "Menus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Images_Products_ObjectId",
                         column: x => x.ObjectId,
+                        principalSchema: "Menu",
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -122,21 +136,25 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_MenuId",
+                schema: "Menu",
                 table: "Categories",
                 column: "MenuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Images_ObjectId",
+                schema: "Menu",
                 table: "Images",
                 column: "ObjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Layouts_MenuId",
+                schema: "Menu",
                 table: "Layouts",
                 column: "MenuId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_MenuId",
+                schema: "Menu",
                 table: "Products",
                 column: "MenuId");
         }
@@ -145,19 +163,24 @@ namespace Splitter.BCMenu.Data.SqlServer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "Images",
+                schema: "Menu");
 
             migrationBuilder.DropTable(
-                name: "Layouts");
+                name: "Layouts",
+                schema: "Menu");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Categories",
+                schema: "Menu");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Products",
+                schema: "Menu");
 
             migrationBuilder.DropTable(
-                name: "Menus");
+                name: "Menus",
+                schema: "Menu");
         }
     }
 }

@@ -37,7 +37,7 @@ public static class DefaultConfiguratorBuilderExtension
                 options.UseInMemoryDatabase("Splitter.Menu");
             else
             {
-                var connectionString = configuration.GetConnectionString("SplitterMenu");
+                var connectionString = configuration.GetConnectionString("SplitterMenuDb");
                 options.UseSqlServer(connectionString);
                 options.EnableDetailedErrors(false);
                 options.EnableSensitiveDataLogging(false);

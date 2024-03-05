@@ -9,6 +9,10 @@ public static class ISptInterfaceCatalogsExtensions
 
     public static SptUpdateCompletion<TModel> CompleteUpdate<TModel>(this ISptInterface _, Guid commandId, TModel model) where TModel : class
         => new(commandId, model);
+
+    public static SptUpdateCompletion<TModel> CompleteUpdate<TModel>(this ISptInterface _, Guid commandId) where TModel : class
+        => new(commandId);
+
     public static SptUpdateManyCompletion<TModel> CompleteUpdate<TModel>(this ISptInterface _, Guid commandId, IEnumerable<TModel> model) where TModel : class
         => new(commandId, model);
 

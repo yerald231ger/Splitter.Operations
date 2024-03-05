@@ -7,4 +7,5 @@ public class SptCreateManyCompletion<TModel> : SptCompletion
 
     public SptCreateManyCompletion(Guid commandId, IEnumerable<TModel> created)
         : base(commandId) => Created = new(created);
+
 }

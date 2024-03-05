@@ -9,4 +9,7 @@ public class SptUpdateCompletion<TModel> : SptCompletion
 
     public SptUpdateCompletion(Guid commandId, TModel updated)
         : base(commandId) => Updated = updated;
+
+    public SptUpdateCompletion(Guid commandId)
+        : base(commandId) { }
 }

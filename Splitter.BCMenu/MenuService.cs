@@ -39,7 +39,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
     public async Task<SptResult> AddOrCreateProduct(AddOrCreateProductCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.MenuId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -50,12 +50,12 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         menu.AddOrCreateProduct(command.ProductId, command.EstablishmentId, command.ProductName, command.ProductPrice);
         await _unitOfWork.UpdateMenu(menu);
         await _unitOfWork.SaveChangesAsync();
-        return _sptInterface.CompleteCreate(command.CommandId, menu);
+        return _sptInterface.CompleteCreate(command.CommandId, menu.GetFirstProduct(command.ProductId)!);
     }
 
     public async Task<SptResult> RemoveProduct(DeleteProductCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.ProductId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -63,8 +63,8 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         var product = menu.GetFirstProduct(command.ProductId);
 
         if (product == null)
-            return _sptInterface.Reject(command.CommandId, MenuRejectCodes.ProductNotFound, MenuRejectCodes.ProductNotFound.GetDescription());
-
+            return _sptInterface.CompleteUpdate<Product>(command.CommandId);
+        
         menu.RemoveProduct(product);
         await _unitOfWork.UpdateMenu(menu);
         await _unitOfWork.SaveChangesAsync();
@@ -73,7 +73,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
     public async Task<SptResult> AddOrCreateCategory(CreateCategoryCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.MenuId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -93,7 +93,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
     public async Task<SptResult> RemoveCategory(DeleteCategoryCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.MenuId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -111,7 +111,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
     public async Task<SptResult> CreateLayout(CreateLayoutCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.MenuId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -125,7 +125,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
     public async Task<SptResult> UpdateProduct(UpdateProductCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.MenuId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -133,7 +133,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         if (command.ProductId == Guid.Empty)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.ProductIdRequired, MenuRejectCodes.ProductIdRequired.GetDescription());
 
-        if(menu.HasProduct(command.ProductId))
+        if (menu.HasProduct(command.ProductId))
             menu.UpdateProduct(command.ProductId, command.ProductName, command.ProductPrice, command.ProductDescription);
         else
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.ProductNotFound, MenuRejectCodes.ProductNotFound.GetDescription());
@@ -145,7 +145,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
     public async Task<SptResult> UpdateCategory(UpdateCategoryCommand command)
     {
-        var menu = await _unitOfWork.MenuRepository.GetByIdAsync(command.MenuId);
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
@@ -153,7 +153,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         if (command.CategoryId == Guid.Empty)
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.CategoryIdRequired, MenuRejectCodes.CategoryIdRequired.GetDescription());
 
-        if(menu.HasCategory(command.CategoryId))
+        if (menu.HasCategory(command.CategoryId))
             menu.UpdateCategory(command.CategoryId, command.CategoryName);
         else
             return _sptInterface.Reject(command.CommandId, MenuRejectCodes.CategoryNotFound, MenuRejectCodes.CategoryNotFound.GetDescription());

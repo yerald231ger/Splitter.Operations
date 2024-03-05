@@ -1,4 +1,6 @@
-﻿namespace Splitter.Operations.WebApi;
+﻿using Splitter.Extensions;
+
+namespace Splitter.Operations.WebApi;
 
 #pragma warning disable IDE1006 // Remove unused private members
 public record ResponseManyDto<TDto> : ReponseDto

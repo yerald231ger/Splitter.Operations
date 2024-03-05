@@ -5,7 +5,7 @@ using Splitter.Operations.Interface;
 using Splitter.Operations.Models;
 using Splitter.Operations.Specification;
 using Splitter.Extensions;
-using Splitter.Extentions.Interface.Abstractions;
+using Splitter.Extensions.Interface.Abstractions;
 
 namespace Splitter.Operations;
 

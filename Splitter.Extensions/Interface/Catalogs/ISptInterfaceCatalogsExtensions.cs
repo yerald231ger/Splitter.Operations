@@ -1,4 +1,4 @@
-﻿namespace Splitter.Extentions.Interface.Abstractions;
+﻿namespace Splitter.Extensions.Interface.Abstractions;
 public static class ISptInterfaceCatalogsExtensions
 {
     public static SptCreateCompletion<TModel> CompleteCreate<TModel>(this ISptInterface _, Guid commandId, TModel model) where TModel : class
@@ -20,10 +20,4 @@ public static class ISptInterfaceCatalogsExtensions
 
     public static SptGetManyCompletion<TModel> CompleteGet<TModel>(this ISptInterface _, Guid commandId, IEnumerable<TModel> model) where TModel : class
         => new(commandId, model);
-
-    public static SptCreatedCommensality<TModel> CreatedCommensality<TModel>(this ISptInterface _, TModel model) where TModel : class
-        => new(model);
-
-    public static SptUpdatedCommensality<TModel> UpdatedCommensality<TModel>(this ISptInterface _, TModel old, TModel @new) where TModel : class
-        => new(old, @new);
 }

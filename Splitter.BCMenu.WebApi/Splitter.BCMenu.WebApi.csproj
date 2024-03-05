@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Splitter.Extensions\Splitter.Extensions.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu\Splitter.BCMenu.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Models\Splitter.BCMenu.Models.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Constants\Splitter.BCMenu.Constants.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Interface\Splitter.BCMenu.Interface.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Infrastructure\Splitter.BCMenu.Infrastructure.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Data.SqlServer\Splitter.BCMenu.Data.SqlServer.csproj" />
+  </ItemGroup>
+
+</Project>

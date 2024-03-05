@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Splitter.Operations.Models;
+using Splitter.Extensions;
 
 namespace Splitter.Operations.WebApi;
 

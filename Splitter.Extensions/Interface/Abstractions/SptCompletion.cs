@@ -1,4 +1,4 @@
-﻿namespace Splitter.Extentions.Interface.Abstractions;
+﻿namespace Splitter.Extensions.Interface.Abstractions;
 public abstract class SptCompletion : SptResult
 {
     public SptCompletion(Guid commandId)

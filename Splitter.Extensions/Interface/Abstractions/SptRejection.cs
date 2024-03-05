@@ -1,4 +1,4 @@
-﻿namespace Splitter.Extentions.Interface.Abstractions;
+﻿namespace Splitter.Extensions.Interface.Abstractions;
 public class SptRejection<TCode> : SptResult
     where TCode : notnull, Enum
 {

@@ -7,6 +7,7 @@ public interface IMenuUnitOfWork : IUnitOfWork
 {
     public IMenuRepository MenuRepository { get; }
 
-    
-    Task<Guid> UpdateMenu(Menu commensality);
+    Task<Menu?> GetCompleteMenu(Guid menuId);
+
+    Task<Guid> UpdateMenu(Menu menu);
 }

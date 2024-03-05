@@ -1,4 +1,4 @@
-﻿namespace Splitter.Extentions.Interface.Abstractions;
+﻿namespace Splitter.Extensions.Interface.Abstractions;
 public abstract class SptCommand
 {
     public Guid CommandId { get; set; }

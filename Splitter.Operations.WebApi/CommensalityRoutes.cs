@@ -1,4 +1,4 @@
-﻿using Splitter.Extentions.Interface.Abstractions;
+﻿using Splitter.Extensions.Interface.Abstractions;
 using Splitter.Operations.Constants;
 using Splitter.Operations.Interface;
 using Splitter.Operations.Models;

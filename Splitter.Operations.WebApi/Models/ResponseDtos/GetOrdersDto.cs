@@ -5,7 +5,7 @@ public record GetOrdersDto : ResponseManyDto<OrderDto>
     public GetOrdersDto(Guid? commandId, IEnumerable<OrderDto> items)
     {
         this.items = items;
-        this.commandId = commandId;
+        CommandId = commandId;
     }
     
 }

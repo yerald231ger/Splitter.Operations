@@ -1,5 +1,4 @@
-using Splitter.Extentions.Interface.Abstractions;
-using Splitter.Operations.Interface;
+using Splitter.Extensions.Interface.Abstractions;
 using Splitter.Operations.Models;
 
 namespace Splitter.Operations.WebApi;

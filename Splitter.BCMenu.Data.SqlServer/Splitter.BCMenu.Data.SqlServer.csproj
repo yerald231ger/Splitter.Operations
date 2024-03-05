@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DependencyInjection/" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Splitter.BCMenu.Interface\Splitter.BCMenu.Interface.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Constants\Splitter.BCMenu.Constants.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.Infrastructure\Splitter.BCMenu.Infrastructure.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu\Splitter.BCMenu.csproj" />
+  </ItemGroup>
+
+</Project>

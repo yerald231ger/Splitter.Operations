@@ -1,4 +1,4 @@
-﻿namespace Splitter.Extentions.Interface.Abstractions;
+﻿namespace Splitter.Extensions.Interface.Abstractions;
 public class SptUpdateManyCompletion<TModel> : SptCompletion
     where TModel : class
 {

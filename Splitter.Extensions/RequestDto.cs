@@ -1,4 +1,4 @@
-﻿namespace Splitter.Operations.WebApi;
+﻿namespace Splitter.Extensions;
 
 public abstract record RequestDto
 {

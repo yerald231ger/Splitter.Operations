@@ -1,4 +1,6 @@
-﻿namespace Splitter.Operations.WebApi;
+﻿using Splitter.Extensions;
+
+namespace Splitter.Operations.WebApi;
 
 public record CreateVoucherDto : RequestDto
 {

@@ -5,5 +5,4 @@ namespace Splitter.BCMenu.Infrastructure;
 
 public interface IMenuRepository : IRepository<Menu, Guid>
 {
-
 }

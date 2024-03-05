@@ -35,5 +35,19 @@ public enum MenuRejectCodes
     [Description("Menu not found")]
     MenuNotFound = 15,
     [Description("Product Id is required")]
-    ProductIdRequired = 16
+    ProductIdRequired = 16,
+
+    [Description("Product not found")]
+    ProductNotFound = 17,
+    [Description("Category Id is required")]
+    CategoryIdRequired = 18,
+
+    [Description("Category name already exists")]
+    CategoryNameAlreadyExists = 19,
+    [Description("Category not found")]
+    CategoryNotFound = 20,
+    [Description("MenuId is required")]
+    MenuIdRequired = 21,
+    [Description("MenuName is required")]
+    MenuNameRequired = 22
 }

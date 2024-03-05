@@ -13,9 +13,9 @@ public static class MenuRoutes
         var routeGroup = app.MapGroup("/menu");
 
         // Get a Menu
-        routeGroup.MapGet("/{menuId}", async (Guid menuId, MenuService menuServices) =>
+        routeGroup.MapGet("/{menuId}", async (Guid menuId, Guid? commandId, MenuService menuServices) =>
         {
-            var command = new GetMenuCommand(Guid.NewGuid(), menuId);
+            var command = new GetMenuCommand(commandId, menuId);
             var result = await menuServices.GetMenu(command);
 
             return result switch

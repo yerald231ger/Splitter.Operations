@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Splitter.BCMenu.Models;
 
-namespace Spliter.BCMenu.DomainTests;
+namespace Splitter.BCMenu.DomainTests;
 
 [TestClass]
 public class LayoutBuilder

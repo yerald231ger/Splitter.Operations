@@ -55,7 +55,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.BCMenu.WebApi", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CBB7CB36-1A11-461E-8731-C927D3B53632}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spliter.BCMenu.DomainTests", "Spliter.BCMenu.DomainTests\Spliter.BCMenu.DomainTests.csproj", "{A4972ACF-ACB1-4505-9C3F-C1ED5549B007}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.BCMenu.DomainTests", "Splitter.BCMenu.DomainTests\Splitter.BCMenu.DomainTests.csproj", "{A4972ACF-ACB1-4505-9C3F-C1ED5549B007}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Splitter.Commensality.Infrastructure\Splitter.Commensality.Infrastructure.csproj" />
+    <ProjectReference Include="..\Splitter.Commensality\Splitter.Commensality.csproj" />
+    <ProjectReference Include="..\Splitter.Extensions\Splitter.Extensions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DependencyInjection/" />
+    <Folder Include="Repositories/" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
+
+
+
+<!-- To configure the database structure, Entity Framework was used with code-first approach. However, since the project is a library, the IEntityTypeConfiguration 
+interface was used to configure the entities.
+
+The following command was used to create the migration:
+Add migration with command  -> dotnet ef migrations add "Init" 
+Script to generete the database -> dotnet ef migrations script -i  -->

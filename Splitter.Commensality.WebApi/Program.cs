@@ -1,15 +1,14 @@
-using Splitter.BCMenu;
+using Splitter.Commensality;
 using Splitter.Commensality.Data.SqlServer;
+using Splitter.Commensality.WebApi;
 using Splitter.Extensions;
-using Splitter.BCMenu.WebApi;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddCommandBuilder();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMenu()
+builder.Services.AddCommensalityService()
     .AddData()
         .AddInMemory();
 
@@ -40,6 +39,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("SplitterFront");
-app.MapMenuRoutes();
-
+app.MapCommensalityOperationsRoute();
+app.MapCommensalityRoutes();
+app.MapOrderRoutes();
+app.MapVoucherRoutes();
+app.MapGet("/", () => "Hello World, Gerardo..!");
 app.Run();

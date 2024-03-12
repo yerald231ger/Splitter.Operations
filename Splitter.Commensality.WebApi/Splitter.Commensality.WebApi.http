@@ -1,0 +1,6 @@
+@Splitter.Commensality.Rest_HostAddress = http://localhost:5088
+
+GET {{Splitter.Commensality.Rest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

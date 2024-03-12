@@ -1,10 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Splitter.BCMenu;
-using Splitter.BCMenu.Data.SqlServer;
-using Splitter.BCMenu.Infrastructure;
-using Splitter.Extensions;
+using Splitter.Commensality.Infrastructure;
 
 namespace Splitter.Commensality.Data.SqlServer;
 
@@ -28,16 +25,20 @@ public static class DefaultConfiguratorBuilderExtension
         IConfiguration configuration,
     ServiceLifetime lifeTime = ServiceLifetime.Scoped, bool isInMemory = false)
     {
-        builder.SplitterBuilder.Services.AddScoped<IMenuRepository, MenuRepository>();
-        builder.SplitterBuilder.Services.AddScoped<IMenuUnitOfWork, MenuUnitOfWork>();
+        builder.SplitterBuilder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.SplitterBuilder.Services.AddScoped<ITagRepository, TagRepository>();
+        builder.SplitterBuilder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+        builder.SplitterBuilder.Services.AddScoped<IOrderRepository, OrderRepository>();
+        builder.SplitterBuilder.Services.AddScoped<ICommensalityRepository, CommensalityRepository>();
+        builder.SplitterBuilder.Services.AddScoped<ICommensalityUnitOfWork, CommensalityUnitOfWork>();
 
-        builder.SplitterBuilder.Services.AddDbContext<MenuDbContext>(options =>
+        builder.SplitterBuilder.Services.AddDbContext<SplitterDbContext>(options =>
         {
             if (isInMemory)
-                options.UseInMemoryDatabase("Splitter.Menu");
+                options.UseInMemoryDatabase("SplitterDb");
             else
             {
-                var connectionString = configuration.GetConnectionString("SplitterMenuDb");
+                var connectionString = configuration.GetConnectionString("SplitterDb");
                 options.UseSqlServer(connectionString);
                 options.EnableDetailedErrors(false);
                 options.EnableSensitiveDataLogging(false);

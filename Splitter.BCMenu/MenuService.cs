@@ -19,6 +19,8 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         if (menu == null)
             return _sptInterface.Reject(query.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
 
+        menu.BuildLayoutToDisplay();
+
         return _sptInterface.CompleteGet(query.CommandId, menu);
     }
 
@@ -64,7 +66,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
 
         if (product == null)
             return _sptInterface.CompleteUpdate<Product>(command.CommandId);
-        
+
         menu.RemoveProduct(product);
         await _unitOfWork.UpdateMenu(menu);
         await _unitOfWork.SaveChangesAsync();

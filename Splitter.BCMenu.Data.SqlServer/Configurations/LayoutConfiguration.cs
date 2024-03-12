@@ -17,8 +17,8 @@ public class LayoutConfiguration : IEntityTypeConfiguration<MenuLayout>
         
         builder.Property(p => p.Layout)
         .HasConversion(
-            v => v.ToString(),
-            v => JsonDocument.Parse(v!, new JsonDocumentOptions { AllowTrailingCommas = true }).RootElement
+            v => v == null ? null : v.RootElement.GetRawText(),
+            v => JsonDocument.Parse(v!, new JsonDocumentOptions { AllowTrailingCommas = true })
         );
     }
 }

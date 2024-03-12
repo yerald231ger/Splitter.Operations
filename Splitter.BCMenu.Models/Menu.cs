@@ -9,6 +9,7 @@ public class Menu
     public required string Name { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsActive { get; set; }
+    public List<ScaffoldCategory<ScaffoldProduct>> Layout { get; set; } = [];
     public List<MenuLayout> MenuLayouts { get; set; } = [];
     public List<Product> Products { get; set; } = [];
     public List<Category> Categories { get; set; } = [];
@@ -31,6 +32,56 @@ public class Menu
     public void AddLayout(MenuLayout menuLayout)
     {
         MenuLayouts.Add(menuLayout);
+    }
+
+    public void BuildLayoutToDisplay()
+    {
+        var lastCreated = MenuLayouts.Last();
+
+        if (lastCreated != null && lastCreated.Layout != null)
+        {
+            var scaffolds = JsonSerializer.Deserialize<List<ScaffoldCategory<Guid>>>(lastCreated.Layout);
+            var layoutBuilded = new List<ScaffoldCategory<ScaffoldProduct>>();
+            if (scaffolds != null)
+                AddProductsToCategory(scaffolds, ref layoutBuilded);
+            Layout = layoutBuilded;
+        }
+    }
+
+    private void AddProductsToCategory(List<ScaffoldCategory<Guid>> categories, ref List<ScaffoldCategory<ScaffoldProduct>> scaffoldToBuild)
+    {
+
+        foreach (var category in categories)
+        {
+            var categoryToBuild = new ScaffoldCategory<ScaffoldProduct>
+            {
+                Title = category.Title
+            };
+
+            if (category.Products != null)
+                foreach (var product in category.Products)
+                {
+                    var productFound = Products.FirstOrDefault(p => p.Id == product);
+                    if (productFound != null)
+                    {
+                        var productToBuild = new ScaffoldProduct
+                        {
+                            Id = productFound.Id,
+                            Name = productFound.Name,
+                            Price = productFound.Price,
+                            Description = productFound.Description
+                        };
+                        categoryToBuild.Products.Add(productToBuild);
+                    }
+                }
+
+            scaffoldToBuild.Add(categoryToBuild);
+            if (category.Categories.Count > 0)
+            {
+                var inner = new List<ScaffoldCategory<ScaffoldProduct>>();
+                AddProductsToCategory(category.Categories, ref inner);
+            }
+        }
     }
 
     public void AddOrCreateCategory(Guid categoryId, Guid establishmentId, string name)
@@ -57,7 +108,7 @@ public class Menu
             EstablishmentId = establishmentId,
             Name = name,
             Price = price,
-            Descripcion = string.Empty,
+            Description = string.Empty,
             IsActive = true,
         };
     }
@@ -74,7 +125,7 @@ public class Menu
             var product = Products.First(p => p.Id == productId);
             product.Name = productName;
             product.Price = productPrice;
-            product.Descripcion = productDescription;
+            product.Description = productDescription;
         }
     }
 
@@ -108,7 +159,7 @@ public class Menu
         Categories.Remove(category);
     }
 
-    public static MenuLayout CreateLayout(Guid menuId, Guid layoutId, JsonElement layout, string name)
+    public static MenuLayout CreateLayout(Guid menuId, Guid layoutId, JsonDocument layout, string name)
     {
         return new MenuLayout
         {

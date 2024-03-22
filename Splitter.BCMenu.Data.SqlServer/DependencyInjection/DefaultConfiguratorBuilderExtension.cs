@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Splitter.BCMenu;
 using Splitter.BCMenu.Data.SqlServer;
 using Splitter.BCMenu.Infrastructure;
-using Splitter.Extensions;
 
 namespace Splitter.Commensality.Data.SqlServer;
 

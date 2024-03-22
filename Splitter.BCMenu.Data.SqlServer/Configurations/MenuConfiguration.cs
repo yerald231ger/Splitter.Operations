@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Splitter.BCMenu.Models;
 
@@ -30,5 +29,7 @@ public class MenuConfiguration : IEntityTypeConfiguration<Menu>
         builder.HasMany(t => t.MenuLayouts)
         .WithOne(p => p.Menu)
         .HasForeignKey(p => p.MenuId);
+
+        builder.Ignore(p => p.Layout);
     }
 }

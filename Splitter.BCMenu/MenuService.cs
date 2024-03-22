@@ -73,7 +73,7 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         return _sptInterface.CompleteUpdate(command.CommandId, product);
     }
 
-    public async Task<SptResult> AddOrCreateCategory(CreateCategoryCommand command)
+    public async Task<SptResult> AddOrCreateCategory(AddOrCreateCategoryCommand command)
     {
         var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
 
@@ -163,6 +163,26 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
         await _unitOfWork.UpdateMenu(menu);
         await _unitOfWork.SaveChangesAsync();
         return _sptInterface.CompleteUpdate(command.CommandId, menu);
+    }
+
+    public async Task<SptResult> GetProducts(GetProductsCommand command)
+    {
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
+
+        if (menu == null)
+            return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
+
+        return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<Product>)menu.GetProducts());
+    }
+
+    public async Task<SptResult> GetCategories(GetCategoriesCommand command)
+    {
+        var menu = await _unitOfWork.GetCompleteMenu(command.MenuId);
+
+        if (menu == null)
+            return _sptInterface.Reject(command.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
+
+        return _sptInterface.CompleteGet(command.CommandId, (IEnumerable<Category>)menu.GetCategories());
     }
 
 }

@@ -1,0 +1,43 @@
+[
+    {
+        "title": "Hamburguesas",
+        "products": [
+            {
+                "id": "45c4768c-8140-406a-85aa-e55f741f3d87"
+            },
+            {
+                "id": "ba0766ae-d693-4d9d-bc3e-910062f7a687"
+            },
+            {
+                "id": "7d13d62e-8dfd-4f42-9acc-46ac963a286c"
+            }
+        ]
+    },
+    {
+        "title": "Pizzas",
+        "categories": [
+            {
+                "title": "Pizzas de carne",
+                "products": [
+                    {
+                        "id": "5d3b7eab-9eb8-4a76-97dc-b286c25fcaf1"
+                    },
+                    {
+                        "id": "8c298f3a-f617-40ed-97f9-4c0047e5a115"
+                    }
+                ]
+            },
+            {
+                "title": "Pizzas de pollo",
+                "products": [
+                    {
+                        "id": "cdce0ee4-6792-4e1f-9429-0ca4ad0923bd"
+                    },
+                    {
+                        "id": "26551d77-0000-4f9a-a16c-95ade22c3b74"
+                    }
+                ]
+            }
+        ]
+    }
+]

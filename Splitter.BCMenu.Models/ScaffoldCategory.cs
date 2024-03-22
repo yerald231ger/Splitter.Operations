@@ -2,26 +2,26 @@
 
 namespace Splitter.BCMenu.Models;
 
-public class ScaffoldCategory<TProduct>
+public class ScaffoldCategory
 {
     [JsonPropertyName("title")]
     public required string Title { get; set; }
     [JsonPropertyName("products")]
-    public List<TProduct> Products { get; set; } = [];
+    public List<ScaffoldProduct> Products { get; set; } = [];
     [JsonPropertyName("categories")]
-    public List<ScaffoldCategory<TProduct>> Categories { get; set; } = [];
+    public List<ScaffoldCategory> Categories { get; set; } = [];
 }
 
 public class ScaffoldProduct
 {
     [JsonPropertyName("id")]
-    public required Guid Id { get; set; }
+    public Guid Id { get; set; }
 
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("price")]
-    public decimal Price { get; set; }
+    public decimal Price { get; set; } = -1;
 
     [JsonPropertyName("images")]
     public string[] Images { get; set; } = [];

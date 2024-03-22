@@ -9,7 +9,7 @@ public class Menu
     public required string Name { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsActive { get; set; }
-    public List<ScaffoldCategory<ScaffoldProduct>> Layout { get; set; } = [];
+    public List<ScaffoldCategory> Layout { get; set; } = [];
     public List<MenuLayout> MenuLayouts { get; set; } = [];
     public List<Product> Products { get; set; } = [];
     public List<Category> Categories { get; set; } = [];
@@ -36,50 +36,38 @@ public class Menu
 
     public void BuildLayoutToDisplay()
     {
-        var lastCreated = MenuLayouts.Last();
+        var lastCreated = MenuLayouts.LastOrDefault();
 
         if (lastCreated != null && lastCreated.Layout != null)
         {
-            var scaffolds = JsonSerializer.Deserialize<List<ScaffoldCategory<Guid>>>(lastCreated.Layout);
-            var layoutBuilded = new List<ScaffoldCategory<ScaffoldProduct>>();
+            var scaffolds = JsonSerializer.Deserialize<List<ScaffoldCategory>>(lastCreated.Layout);
             if (scaffolds != null)
-                AddProductsToCategory(scaffolds, ref layoutBuilded);
-            Layout = layoutBuilded;
+            {
+                AddProductsToCategory(scaffolds);
+                Layout = scaffolds;
+            }
         }
     }
 
-    private void AddProductsToCategory(List<ScaffoldCategory<Guid>> categories, ref List<ScaffoldCategory<ScaffoldProduct>> scaffoldToBuild)
+    private void AddProductsToCategory(List<ScaffoldCategory> categories)
     {
-
         foreach (var category in categories)
         {
-            var categoryToBuild = new ScaffoldCategory<ScaffoldProduct>
-            {
-                Title = category.Title
-            };
-
             if (category.Products != null)
                 foreach (var product in category.Products)
                 {
-                    var productFound = Products.FirstOrDefault(p => p.Id == product);
+                    var productFound = Products.FirstOrDefault(p => p.Id == product.Id);
                     if (productFound != null)
                     {
-                        var productToBuild = new ScaffoldProduct
-                        {
-                            Id = productFound.Id,
-                            Name = productFound.Name,
-                            Price = productFound.Price,
-                            Description = productFound.Description
-                        };
-                        categoryToBuild.Products.Add(productToBuild);
+                        product.Name = productFound.Name;
+                        product.Price = productFound.Price;
+                        product.Description = productFound.Description;
                     }
                 }
 
-            scaffoldToBuild.Add(categoryToBuild);
             if (category.Categories.Count > 0)
             {
-                var inner = new List<ScaffoldCategory<ScaffoldProduct>>();
-                AddProductsToCategory(category.Categories, ref inner);
+                AddProductsToCategory(category.Categories);
             }
         }
     }
@@ -169,4 +157,8 @@ public class Menu
             Name = name,
         };
     }
+
+    public List<Product> GetProducts() => Products;
+
+    public List<Category> GetCategories() => Categories;
 }

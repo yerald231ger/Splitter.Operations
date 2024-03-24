@@ -62,6 +62,8 @@ public class Menu
                         product.Name = productFound.Name;
                         product.Price = productFound.Price;
                         product.Description = productFound.Description;
+                        product.Images = productFound.Images.Select(i => i.Url).ToArray();
+
                     }
                 }
 

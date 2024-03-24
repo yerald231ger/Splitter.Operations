@@ -57,6 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CBB7CB36
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.BCMenu.DomainTests", "Splitter.BCMenu.DomainTests\Splitter.BCMenu.DomainTests.csproj", "{A4972ACF-ACB1-4505-9C3F-C1ED5549B007}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitter.BCMenu.IntegrationsTests", "Splitter.BCMenu.IntegrationsTest\Splitter.BCMenu.IntegrationsTests.csproj", "{0C8B36F9-DB70-421F-BAC4-E4D71D66016E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,10 @@ Global
 		{A4972ACF-ACB1-4505-9C3F-C1ED5549B007}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4972ACF-ACB1-4505-9C3F-C1ED5549B007}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4972ACF-ACB1-4505-9C3F-C1ED5549B007}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C8B36F9-DB70-421F-BAC4-E4D71D66016E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C8B36F9-DB70-421F-BAC4-E4D71D66016E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C8B36F9-DB70-421F-BAC4-E4D71D66016E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C8B36F9-DB70-421F-BAC4-E4D71D66016E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,5 +166,6 @@ Global
 		{66AF998F-C709-449B-8A89-6CEB96B182D3} = {24D66818-23CB-4EB2-9924-59D7DE06130A}
 		{CBB7CB36-1A11-461E-8731-C927D3B53632} = {F1CD5A98-A4D5-4A45-8B80-0B30F93D021B}
 		{A4972ACF-ACB1-4505-9C3F-C1ED5549B007} = {CBB7CB36-1A11-461E-8731-C927D3B53632}
+		{0C8B36F9-DB70-421F-BAC4-E4D71D66016E} = {CBB7CB36-1A11-461E-8731-C927D3B53632}
 	EndGlobalSection
 EndGlobal

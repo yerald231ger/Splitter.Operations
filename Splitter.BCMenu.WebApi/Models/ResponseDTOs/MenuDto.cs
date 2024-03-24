@@ -1,4 +1,5 @@
-﻿using Splitter.Extensions;
+﻿using Splitter.BCMenu.Models;
+using Splitter.Extensions;
 
 namespace Splitter.BCMenu.WebApi;
 
@@ -9,6 +10,7 @@ public record MenuDto : ReponseDto
     public required string Name { get; set; }
     public string Description { get; set; } = string.Empty;
     public bool IsActive { get; set; }
+    public List<ScaffoldCategory> Layout { get; set; } = [];
 
     public List<ProductDto> Products { get; set; } = [];
 }

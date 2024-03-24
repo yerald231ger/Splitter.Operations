@@ -31,9 +31,8 @@ public static class Extensions
             Name = cmd.Item.Name,
             Description = cmd.Item.Description,
             IsActive = cmd.Item.IsActive,
-            Products = cmd.Item.Products.Select(p => p.ToDto()).ToList()
+            Layout = cmd.Item.Layout,
         };
-
         return menuDto;
     }
 

@@ -7,7 +7,6 @@ using Splitter.Commensality.Data.SqlServer;
 using Splitter.Extensions;
 using Splitter.Extensions.Interface.Abstractions;
 using NJsonSchema;
-using Microsoft.VisualBasic;
 
 namespace Splitter.BCMenu.DomainTests;
 
@@ -46,7 +45,7 @@ public class MenuServiceTests
         };
 
         var getMenuCommand = new GetMenuCommand(commandId, menuId);
-        var menu = await menuService.GetMenu(getMenuCommand) switch
+        var menu = await menuService.GetCompleteMenu(getMenuCommand) switch
         {
             SptGetCompletion<Menu> r => r.Item,
             SptRejection<MenuRejectCodes> => throw new Exception("Menu get failed"),
@@ -95,7 +94,7 @@ public class MenuServiceTests
         };
 
         var getMenuCommand = new GetMenuCommand(commandId, menuId);
-        var menu = await menuService.GetMenu(getMenuCommand) switch
+        var menu = await menuService.GetCompleteMenu(getMenuCommand) switch
         {
             SptGetCompletion<Menu> r => r.Item,
             SptRejection<MenuRejectCodes> => throw new Exception("Menu get failed"),
@@ -353,7 +352,7 @@ public class MenuServiceTests
         };
 
         var getMenuCommand = new GetMenuCommand(commandId, menuId);
-        var menu = await menuService.GetMenu(getMenuCommand) switch
+        var menu = await menuService.GetCompleteMenu(getMenuCommand) switch
         {
             SptGetCompletion<Menu> r => r.Item,
             SptRejection<MenuRejectCodes> => throw new Exception("Menu creation failed"),

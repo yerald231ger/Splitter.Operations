@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.IO.Compression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Splitter.BCMenu.Infrastructure;
 using Splitter.BCMenu.Models;
@@ -27,10 +28,32 @@ public class MenuUnitOfWork(
     {
         var menu = await _context.Menus
             .Include(m => m.Products)
+            .Include(m => m.MenuLayouts)
+            .Include(m => m.Categories)
             .FirstOrDefaultAsync(m => m.Id == menuId);
 
-        if(menu == null)
+        if (menu == null)
             return default;
+
+        return menu;
+    }
+
+    public async Task<Menu?> GetMenuBuildedLayout(Guid menuId)
+    {
+        var menu = await _context.Menus
+            .Include(m => m.Products)
+            .ThenInclude(p => p.Images)
+            .FirstOrDefaultAsync(m => m.Id == menuId);
+
+        if (menu == null)
+            return default;
+
+        var menuLayout = await _context.MenuLayouts
+            .Where(ml => ml.MenuId == menuId)
+            .OrderByDescending(ml => ml.CreatedAt)
+            .LastAsync();
+
+        menu.MenuLayouts = menuLayout == null ? [] : [menuLayout];
 
         return menu;
     }

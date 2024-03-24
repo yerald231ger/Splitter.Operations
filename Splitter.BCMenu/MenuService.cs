@@ -12,14 +12,24 @@ public class MenuService(IMenuUnitOfWork unitOfWork, ISptInterface sptInterface)
     private readonly IMenuUnitOfWork _unitOfWork = unitOfWork;
     private readonly ISptInterface _sptInterface = sptInterface;
 
-    public async Task<SptResult> GetMenu(GetMenuCommand query)
+    public async Task<SptResult> GetMenuBuildedLayout(GetMenuCommand query)
+    {
+        var menu = await _unitOfWork.GetMenuBuildedLayout(query.MenuId);
+
+        if (menu == null)
+            return _sptInterface.Reject(query.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
+            
+        menu.BuildLayoutToDisplay();
+
+        return _sptInterface.CompleteGet(query.CommandId, menu);
+    }
+
+    public async Task<SptResult> GetCompleteMenu(GetMenuCommand query)
     {
         var menu = await _unitOfWork.GetCompleteMenu(query.MenuId);
 
         if (menu == null)
             return _sptInterface.Reject(query.CommandId, MenuRejectCodes.MenuNotFound, MenuRejectCodes.MenuNotFound.GetDescription());
-
-        menu.BuildLayoutToDisplay();
 
         return _sptInterface.CompleteGet(query.CommandId, menu);
     }

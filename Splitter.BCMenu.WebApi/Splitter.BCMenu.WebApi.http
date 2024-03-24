@@ -1,6 +1,10 @@
 @Splitter.BCMenu.WebApi_HostAddress = http://localhost:5141
 
-GET {{Splitter.BCMenu.WebApi_HostAddress}}/weatherforecast/
+GET http://localhost:5141/menu/3fa85f64-5717-4562-b3fc-2c963f66afa6
 Accept: application/json
 
 ###
+
+
+GET http://localhost:5141/menu/3fa85f64-5717-4562-b3fc-2c963f66af00
+Accept: application/json

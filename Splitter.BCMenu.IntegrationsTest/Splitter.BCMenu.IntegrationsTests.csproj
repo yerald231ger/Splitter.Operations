@@ -13,23 +13,23 @@
     <Content Include="MenuLayout.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="MenuLayout.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <InternalsVisibleTo Include="Splitter.BCMenu.WebApi" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NJsonSchema" Version="11.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.4" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.4" />
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.3" />
+    <PackageReference Include="NJsonSchema" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Splitter.BCMenu\Splitter.BCMenu.csproj" />
-    <ProjectReference Include="..\Splitter.BCMenu.Models\Splitter.BCMenu.Models.csproj" />
-    <ProjectReference Include="..\Splitter.BCMenu.Interface\Splitter.BCMenu.Interface.csproj" />
+    <ProjectReference Include="..\Splitter.BCMenu.WebApi\Splitter.BCMenu.WebApi.csproj" />
     <ProjectReference Include="..\Splitter.BCMenu.Data.SqlServer\Splitter.BCMenu.Data.SqlServer.csproj" />
   </ItemGroup>
 

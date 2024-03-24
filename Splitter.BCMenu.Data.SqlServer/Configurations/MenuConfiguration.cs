@@ -21,7 +21,7 @@ public class MenuConfiguration : IEntityTypeConfiguration<Menu>
         builder.HasMany(t => t.Categories)
         .WithOne(p => p.Menu)
         .HasForeignKey(p => p.MenuId);
-        
+
         builder.HasMany(t => t.Images)
         .WithOne()
         .HasForeignKey(p => p.ObjectId);
@@ -31,5 +31,14 @@ public class MenuConfiguration : IEntityTypeConfiguration<Menu>
         .HasForeignKey(p => p.MenuId);
 
         builder.Ignore(p => p.Layout);
+
+        builder.HasData([
+            new Menu
+            {
+                EstablishmentId = Guid.Parse("dd0bc94a-9da3-4695-9c0a-de2c057d2468"),
+                Id = Guid.Parse("11000000-5e6f-7a8b-9c0d-1e2f3a4b5c6d"),
+                Name = "Main Menu"
+            }
+        ]);
     }
 }

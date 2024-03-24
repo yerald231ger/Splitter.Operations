@@ -17,5 +17,32 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.HasMany(t => t.Images)
         .WithOne()
         .HasForeignKey(p => p.ObjectId);
+
+        builder.HasData(categories);
     }
+
+    private readonly List<Category> categories =
+    [
+        new Category
+        {
+            EstablishmentId = Guid.Parse("dd0bc94a-9da3-4695-9c0a-de2c057d2468"),
+            Id = Guid.NewGuid(),
+            Name = "Appetizers",
+            MenuId = Guid.Parse("11000000-5e6f-7a8b-9c0d-1e2f3a4b5c6d")
+        },
+        new Category
+        {
+            EstablishmentId = Guid.Parse("dd0bc94a-9da3-4695-9c0a-de2c057d2468"),
+            Id = Guid.NewGuid(),
+            Name = "Main Courses",
+            MenuId = Guid.Parse("11000000-5e6f-7a8b-9c0d-1e2f3a4b5c6d")
+        },
+        new Category
+        {
+            EstablishmentId = Guid.Parse("dd0bc94a-9da3-4695-9c0a-de2c057d2468"),
+            Id = Guid.NewGuid(),
+            Name = "Desserts",
+            MenuId = Guid.Parse("11000000-5e6f-7a8b-9c0d-1e2f3a4b5c6d")
+        },
+    ];
 }

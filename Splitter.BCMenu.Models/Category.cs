@@ -5,12 +5,10 @@ public class Category
     public required Guid EstablishmentId { get; set; }
     public required string Name { get; set; }
     public bool IsActive { get; set; }
-
+    public List<Image> Images { get; set; } = [];
     public Guid? MenuId { get; set; }
 
     public Menu? Menu { get; set; }
-
-    public List<Image> Images { get; set; } = [];
 
     public static Category Create(Guid id, Guid establishmentId, Guid guid, string name, bool isActive) => new()
     {

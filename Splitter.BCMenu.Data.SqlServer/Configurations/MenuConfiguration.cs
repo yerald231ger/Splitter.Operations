@@ -22,13 +22,11 @@ public class MenuConfiguration : IEntityTypeConfiguration<Menu>
         .WithOne(p => p.Menu)
         .HasForeignKey(p => p.MenuId);
 
-        builder.HasMany(t => t.Images)
-        .WithOne()
-        .HasForeignKey(p => p.ObjectId);
-
         builder.HasMany(t => t.MenuLayouts)
         .WithOne(p => p.Menu)
         .HasForeignKey(p => p.MenuId);
+        
+        builder.Ignore(p => p.Images);
 
         builder.Ignore(p => p.Layout);
 

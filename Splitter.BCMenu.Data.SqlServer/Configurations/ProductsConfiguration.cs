@@ -14,12 +14,10 @@ public class ProductsConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Id)
         .ValueGeneratedNever();
 
-        builder.HasMany(t => t.Images)
-        .WithOne()
-        .HasForeignKey(p => p.ObjectId);
-
         builder.Property(p => p.Price)
         .HasColumnType("decimal(18, 2)");
+
+        builder.Ignore(p => p.Images);
 
         builder.HasData(products);
     }

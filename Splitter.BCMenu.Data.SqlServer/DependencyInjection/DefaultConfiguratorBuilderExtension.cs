@@ -38,8 +38,6 @@ public static class DefaultConfiguratorBuilderExtension
             {
                 var connectionString = configuration.GetConnectionString("SplitterMenuDb");
                 options.UseSqlServer(connectionString);
-                options.EnableDetailedErrors(false);
-                options.EnableSensitiveDataLogging(false);
             }
         });
         return builder;

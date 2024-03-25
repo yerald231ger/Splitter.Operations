@@ -12,7 +12,7 @@ public class Menu
     public List<ScaffoldCategory> Layout { get; set; } = [];
     public List<MenuLayout> MenuLayouts { get; set; } = [];
     public List<Product> Products { get; set; } = [];
-    public List<Category> Categories { get; set; } = [];
+    public List<Category> Categories { get; set; } = [];    
     public List<Image> Images { get; set; } = [];
 
     public static Menu Create(Guid id, Guid establishmentId, string name, bool isActive) => new()

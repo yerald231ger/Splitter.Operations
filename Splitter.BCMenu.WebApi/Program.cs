@@ -45,5 +45,6 @@ app.UseHttpsRedirection();
 app.UseCors("SplitterFront");
 app.MapMenuRoutes();
 
+app.MapGet("/", () => "Hello menu..!");
 app.Run();
 public partial class Program { }

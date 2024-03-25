@@ -42,7 +42,6 @@ public class MenuUnitOfWork(
     {
         var menu = await _context.Menus
             .Include(m => m.Products)
-            .ThenInclude(p => p.Images)
             .FirstOrDefaultAsync(m => m.Id == menuId);
 
         if (menu == null)
@@ -53,8 +52,15 @@ public class MenuUnitOfWork(
             .OrderByDescending(ml => ml.CreatedAt)
             .LastAsync();
 
-        menu.MenuLayouts = menuLayout == null ? [] : [menuLayout];
+        var images = await _context.Images.
+        Where(i => menu.Products.Select(p => p.Id).ToList().Contains(i.ObjectId)
+        ).ToListAsync();
+        
+        menu.Products.ForEach(p => p.Images = images.Where(i => i.ObjectId == p.Id)
+        .ToList());
 
+        menu.MenuLayouts = menuLayout == null ? [] : [menuLayout];
+    
         return menu;
     }
 }
